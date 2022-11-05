@@ -1,11 +1,29 @@
-list = []
+# Author:
+# Date: ?
+
+#
+
+# Psuedo code ?
+
 run = "y"
-total = 0
+outcomes = []
 
 progress = 0
 trailer = 0
 retriever = 0
 excluded = 0
+
+
+def storeOutcomes(value):
+    progression = [
+        "Progress",
+        "Progress (module trailer)",
+        "Do not Progress – module retriever",
+        "Exclude",
+    ]
+    print(progression[value])
+    list.insert(0, progression[value])
+    outcomes.append(list)
 
 
 def stars(value):
@@ -16,12 +34,11 @@ def stars(value):
 
 
 while run.lower() == "y":
-    total += 1
-    list.clear()
+    list = []
     print()
-    for type in ["pass", "defer", "fail"]:
+    for type in ["PASS", "DEFER", "FAIL"]:
         try:
-            credits = int(input(f"Please enter your credits at {type}: "))
+            credits = int(input(f"Enter your total {type} credits: "))
         except ValueError:
             print("Integer required")
             break
@@ -36,16 +53,16 @@ while run.lower() == "y":
         print("Total incorrect.")
         break
     elif list[0] == 120:
-        print("Progress")
+        storeOutcomes(0)
         progress += 1
     elif list[2] >= 80:
-        print("Exclude")
+        storeOutcomes(3)
         excluded += 1
     elif list[0] == 100:
-        print("Progress (module trailer)")
+        storeOutcomes(1)
         trailer += 1
     else:
-        print("Do not progress – module retriever")
+        storeOutcomes(2)
         retriever += 1
 
     print("\nWould you like to enter another set of data?")
@@ -60,9 +77,18 @@ Progress {progress}   : {stars(progress)}
 Trailer {trailer}    : {stars(trailer)}
 Retriever {retriever}  : {stars(retriever)}
 Excluded {excluded}   : {stars(excluded)}
-{total} outcomes in total.
+{len(outcomes)} outcomes in total.
 ----------------------------------------------------------------
 """
         )
-else:
-    print("Invalid input")
+        print("Part 2:")
+        for i in outcomes:
+            type = str(i[0])
+            numbers = str(i[1:])
+            print(type + " - " + numbers[1:-1])
+
+    elif run.lower() == "y":
+        continue
+    else:
+        print("Invalid input")
+        break
