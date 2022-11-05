@@ -5,14 +5,14 @@
 # Date: 05th November 2022
 
 run = "y"
-outcomes = []
+outcomes = {}
 
 progress = 0
 trailer = 0
 retriever = 0
 excluded = 0
 
-fileWrite = open("data.txt", "w")
+num = 0
 
 
 def storeOutcomes(value):
@@ -23,10 +23,12 @@ def storeOutcomes(value):
         "Exclude",
     ]
     print(progression[value])
-    list.insert(0, progression[value] + " - ")
-    outcomes.append(list)
 
-    fileWrite.writelines(listToString(list) + "\n")
+    line = {}
+    line["type"] = progression[value]
+    line["values"] = list
+
+    outcomes.update({num: line})
 
 
 def printStars(value):
@@ -34,12 +36,6 @@ def printStars(value):
     for i in range(value):
         h += "*"
     return h
-
-
-def listToString(value):
-    type = str(value[0])
-    numbers = str(value[1:])
-    return type + numbers[1:-1]
 
 
 while run.lower() == "y":
@@ -74,11 +70,12 @@ while run.lower() == "y":
         storeOutcomes(2)
         retriever += 1
 
+    num += 1
+
     print("\nWould you like to enter another set of data?")
     run = input("Enter 'y' for yes or 'q' to quit and view results: ")
 
     if run.lower() == "q":
-        fileWrite.close()
         print(
             f"""
 ----------------------------------------------------------------
@@ -91,14 +88,9 @@ Excluded {excluded}   : {printStars(excluded)}
 ----------------------------------------------------------------
 """
         )
-        print("Part 2:")
-        for outcome in outcomes:
-            print(listToString(outcome))
-        print()
-
-        print("Part 3:")
-        fileOpen = open("data.txt", "r")
-        print(fileOpen.read())
+        print("Part 4:")
+        for i in outcomes.values():
+            print(f"{i['type']} - {str(i['values'])[1:-1]}")
 
     elif run.lower() == "y":
         continue
