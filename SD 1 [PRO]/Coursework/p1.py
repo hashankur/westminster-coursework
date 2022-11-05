@@ -13,24 +13,34 @@ trailer = 0
 retriever = 0
 excluded = 0
 
+fileWrite = open("data.txt", "w")
+
 
 def storeOutcomes(value):
     progression = [
         "Progress",
         "Progress (module trailer)",
-        "Do not Progress – module retriever",
+        "Module retriever",
         "Exclude",
     ]
     print(progression[value])
-    list.insert(0, progression[value])
+    list.insert(0, progression[value] + " - ")
     outcomes.append(list)
 
+    fileWrite.writelines(listToString(list) + "\n")
 
-def stars(value):
+
+def printStars(value):
     h = ""
     for i in range(value):
         h += "*"
     return h
+
+
+def listToString(value):
+    type = str(value[0])
+    numbers = str(value[1:])
+    return type + numbers[1:-1]
 
 
 while run.lower() == "y":
@@ -69,23 +79,27 @@ while run.lower() == "y":
     run = input("Enter 'y' for yes or 'q' to quit and view results: ")
 
     if run.lower() == "q":
+        fileWrite.close()
         print(
             f"""
----------------------------------------------------------------
+----------------------------------------------------------------
 Histogram
-Progress {progress}   : {stars(progress)}
-Trailer {trailer}    : {stars(trailer)}
-Retriever {retriever}  : {stars(retriever)}
-Excluded {excluded}   : {stars(excluded)}
+Progress {progress}   : {printStars(progress)}
+Trailer {trailer}    : {printStars(trailer)}
+Retriever {retriever}  : {printStars(retriever)}
+Excluded {excluded}   : {printStars(excluded)}
 {len(outcomes)} outcomes in total.
 ----------------------------------------------------------------
 """
         )
         print("Part 2:")
-        for i in outcomes:
-            type = str(i[0])
-            numbers = str(i[1:])
-            print(type + " - " + numbers[1:-1])
+        for outcome in outcomes:
+            print(listToString(outcome))
+        print()
+
+        print("Part 3:")
+        fileOpen = open("data.txt", "r")
+        print(fileOpen.read())
 
     elif run.lower() == "y":
         continue
