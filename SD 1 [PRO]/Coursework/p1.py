@@ -15,13 +15,26 @@ excluded = 0
 fileWrite = open("data.txt", "w")
 
 
+def inputValidation():
+    for type in ("PASS", "DEFER", "FAIL"):
+        try:
+            credits = int(input(f"Enter your total {type} credits: "))
+        except ValueError:
+            return "Integer required"
+        else:
+            if credits not in range(0, 121, 20):
+                return "Out of range."
+            else:
+                list.append(credits)
+
+
 def storeOutcomes(value):
-    progression = [
+    progression = (
         "Progress",
         "Progress (module trailer)",
         "Module retriever",
         "Exclude",
-    ]
+    )
     print(progression[value])
     list.insert(0, progression[value] + " - ")
     outcomes.append(list)
@@ -30,10 +43,7 @@ def storeOutcomes(value):
 
 
 def printStars(value):
-    h = ""
-    for i in range(value):
-        h += "*"
-    return h
+    return value * "*"
 
 
 def listToString(value):
@@ -45,18 +55,12 @@ def listToString(value):
 while run.lower() == "y":
     list = []
     print()
-    for type in ["PASS", "DEFER", "FAIL"]:
-        try:
-            credits = int(input(f"Enter your total {type} credits: "))
-        except ValueError:
-            print("Integer required")
-            break
-        else:
-            if credits not in range(0, 121, 20):
-                print("Out of range.")
-                break
-            else:
-                list.append(credits)
+
+    check = inputValidation()
+
+    if check != None:
+        print(check)
+        break
 
     if sum(list) != 120:
         print("Total incorrect.")
@@ -91,6 +95,7 @@ Excluded {excluded}   : {printStars(excluded)}
 ----------------------------------------------------------------
 """
         )
+
         print("Part 2:")
         for outcome in outcomes:
             print(listToString(outcome))
