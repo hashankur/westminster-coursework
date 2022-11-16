@@ -12,47 +12,60 @@ trailer = 0
 retriever = 0
 excluded = 0
 
-num = 0
+fileWrite = open("data.txt", "w")
+
+
+def inputValidation():
+    for type in ("PASS", "DEFER", "FAIL"):
+        try:
+            credits = int(input(f"Enter your total {type} credits: "))
+        except ValueError:
+            return "Integer required"
+        else:
+            if credits not in range(0, 121, 20):
+                return "Out of range."
+            else:
+                list.append(credits)
 
 
 def storeOutcomes(value):
-    progression = [
+    progression = (
         "Progress",
         "Progress (module trailer)",
         "Module retriever",
         "Exclude",
-    ]
+    )
     print(progression[value])
 
     line = {}
     line["type"] = progression[value]
     line["values"] = list
 
-    outcomes.update({num: line})
+    outcomes[id] = line
+
+    fileWrite.writelines(listToString(list) + "\n")
 
 
 def printStars(value):
-    h = ""
-    for i in range(value):
-        h += "*"
-    return h
+    return value * "*"
+
+
+def listToString(value):
+    type = str(value[0])
+    numbers = str(value[1:])
+    return type + numbers[1:-1]
 
 
 while run.lower() == "y":
     list = []
     print()
-    for type in ["PASS", "DEFER", "FAIL"]:
-        try:
-            credits = int(input(f"Enter your total {type} credits: "))
-        except ValueError:
-            print("Integer required")
-            break
-        else:
-            if credits not in range(0, 121, 20):
-                print("Out of range.")
-                break
-            else:
-                list.append(credits)
+
+    id = input("Student ID: ")
+    check = inputValidation()
+
+    if check != None:
+        print(check)
+        break
 
     if sum(list) != 120:
         print("Total incorrect.")
@@ -70,12 +83,11 @@ while run.lower() == "y":
         storeOutcomes(2)
         retriever += 1
 
-    num += 1
-
     print("\nWould you like to enter another set of data?")
     run = input("Enter 'y' for yes or 'q' to quit and view results: ")
 
     if run.lower() == "q":
+        fileWrite.close()
         print(
             f"""
 ----------------------------------------------------------------
@@ -89,8 +101,8 @@ Excluded {excluded}   : {printStars(excluded)}
 """
         )
         print("Part 4:")
-        for i in outcomes.values():
-            print(f"{i['type']} - {str(i['values'])[1:-1]}")
+        for (key, value) in outcomes.items():
+            print(f"{key} : {value['type']} - {str(value['values'])[1:-1]}")
 
     elif run.lower() == "y":
         continue

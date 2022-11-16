@@ -6,11 +6,7 @@
 
 run = "y"
 outcomes = []
-
-progress = 0
-trailer = 0
-retriever = 0
-excluded = 0
+count = [0, 0, 0, 0]
 
 fileWrite = open("data.txt", "w")
 
@@ -35,15 +31,12 @@ def storeOutcomes(value):
         "Module retriever",
         "Exclude",
     )
+    count[value] += 1
     print(progression[value])
     list.insert(0, progression[value] + " - ")
     outcomes.append(list)
 
     fileWrite.writelines(listToString(list) + "\n")
-
-
-def printStars(value):
-    return value * "*"
 
 
 def listToString(value):
@@ -52,12 +45,9 @@ def listToString(value):
     return type + numbers[1:-1]
 
 
-while run.lower() == "y":
+while run == "y":
     list = []
-    print()
-
     check = inputValidation()
-
     if check != None:
         print(check)
         break
@@ -67,34 +57,31 @@ while run.lower() == "y":
         break
     elif list[0] == 120:
         storeOutcomes(0)
-        progress += 1
     elif list[2] >= 80:
         storeOutcomes(3)
-        excluded += 1
     elif list[0] == 100:
         storeOutcomes(1)
-        trailer += 1
     else:
         storeOutcomes(2)
-        retriever += 1
 
     print("\nWould you like to enter another set of data?")
-    run = input("Enter 'y' for yes or 'q' to quit and view results: ")
+    run = input("Enter 'y' for yes or 'q' to quit and view results: ").lower()
+    print()
 
-    if run.lower() == "q":
+    if run == "y":
+        continue
+
+    elif run == "q":
         fileWrite.close()
-        print(
-            f"""
-----------------------------------------------------------------
-Histogram
-Progress {progress}   : {printStars(progress)}
-Trailer {trailer}    : {printStars(trailer)}
-Retriever {retriever}  : {printStars(retriever)}
-Excluded {excluded}   : {printStars(excluded)}
-{len(outcomes)} outcomes in total.
-----------------------------------------------------------------
-"""
-        )
+
+        print("-" * 60)
+        print("Histogram")
+        lineType = ("Progress", "Trailer", "Retriever", "Excluded")
+        for i in lineType:
+            index = count[lineType.index(i)]
+            print(f"{i + ' ' + str(index):12} : {'*' * index}")
+        print(f"{len(outcomes)} outcomes in total.")
+        print("-" * 60 + "\n")
 
         print("Part 2:")
         for outcome in outcomes:
@@ -105,8 +92,7 @@ Excluded {excluded}   : {printStars(excluded)}
         fileOpen = open("data.txt", "r")
         print(fileOpen.read())
 
-    elif run.lower() == "y":
-        continue
     else:
+        fileWrite.close()
         print("Invalid input")
         break
