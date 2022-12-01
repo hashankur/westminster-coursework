@@ -1,10 +1,11 @@
-## I declare that my work contains no examples of misconduct, such as plagiarism, or collusion.
+# I declare that my work contains no examples of misconduct, such as plagiarism, or collusion.
 # Any code taken from other sources is referenced within my code solution.
 
-# Student ID: w1953615
+# Student ID: w1953615, 20221026
 # Date: 05th November 2022
 
 run = "y"
+creditList = []
 outcomes = []
 count = [0, 0, 0, 0]
 
@@ -22,7 +23,7 @@ def inputValidation():
             if credits not in range(0, 121, 20):
                 return "Out of range."
             else:
-                list.append(credits)
+                creditList.append(credits)
 
 
 def storeOutcomes(value):
@@ -35,70 +36,80 @@ def storeOutcomes(value):
     )
     count[value] += 1
     print(progression[value])
-    list.insert(0, progression[value] + " - ")
-    outcomes.append(list)
+    creditList.insert(0, progression[value] + " - ")
+    outcomes.append(creditList)
 
-    fileWrite.writelines(listToString(list) + "\n")
+    fileWrite.writelines(listToString(creditList) + "\n")
 
 
 def listToString(value):
     """Convert list to string and return formatted line"""
-    type = str(value[0])
-    numbers = str(value[1:])
-    return type + numbers[1:-1]
+    type, *credits = value
+    return type + str(credits)[1:-1]
 
 
-while run == "y":
-    list = []
-
-    check = inputValidation()
-    if check != None:
-        print(check)
-        continue
-
-    if sum(list) != 120:
-        print("Total incorrect.")
-        continue
-    elif list[0] == 120:
-        storeOutcomes(0)  # Progress
-    elif list[2] >= 80:
-        storeOutcomes(3)  # Exclude
-    elif list[0] == 100:
-        storeOutcomes(1)  # Trailer
-    else:
-        storeOutcomes(2)  # Retriever
-
-    print("\nWould you like to enter another set of data?")
+def anotherSetOfData():
+    """Get choice from user to continue or exit"""
+    global run  # To change variable outside function scope
     run = input("Enter 'y' for yes or 'q' to quit and view results: ").lower()
     print()
 
-    if run == "y":
-        continue
-
-    elif run == "q":
-        fileWrite.close()
-
-        print("-" * 60)
-        print("Histogram")
-        lineType = ("Progress", "Trailer", "Retriever", "Excluded")
-        for i in lineType:
-            # Get count using index according to lineType
-            index = count[lineType.index(i)]
-            # Print (type, count : stars)
-            print(f"{i + ' ' + str(index):12} : {'*' * index}")
-        print(f"{len(outcomes)} outcomes in total.")
-        print("-" * 60 + "\n")
-
-        print("Part 2:")
-        for outcome in outcomes:
-            print(listToString(outcome))
-        print()
-
-        print("Part 3:")
-        fileOpen = open("data.txt", "r")
-        print(fileOpen.read())
-
+    if run in ("y", "q"):
+        if run == "q":
+            fileWrite.close()
+            parts1_2_3()
     else:
-        fileWrite.close()
         print("Invalid input")
-        continue
+        anotherSetOfData()
+
+
+def parts1_2_3():
+    print("-" * 60)
+    print("Histogram")
+    lineType = ("Progress", "Trailer", "Retriever", "Excluded")
+    for (i, type) in enumerate(lineType):
+        # Prints (type, count : stars)
+        print(f"{type + ' ' + str(count[i]):12} : {'*' * count[i]}")
+    print(f"{len(outcomes)} outcomes in total.")
+    print("-" * 60 + "\n")
+
+    print("Part 2:")
+    for outcome in outcomes:
+        print(listToString(outcome))
+    print()
+
+    print("Part 3:")
+    fileOpen = open("data.txt", "r")
+    print(fileOpen.read())
+
+
+def main():
+    while run == "y":
+        global creditList
+        creditList = []
+
+        error = inputValidation()
+        if error is not None:
+            print(error)
+            continue
+
+        if sum(creditList) != 120:
+            print("Total incorrect\n")
+            continue
+        elif creditList[0] == 120:
+            storeOutcomes(0)  # Progress
+        elif creditList[2] >= 80:
+            storeOutcomes(3)  # Exclude
+        elif creditList[0] == 100:
+            storeOutcomes(1)  # Trailer
+        else:
+            storeOutcomes(2)  # Retriever
+
+        print("\nWould you like to enter another set of data?")
+
+        anotherSetOfData()
+
+
+main()
+
+# https://www.freecodecamp.org/news/python-global-variables-examples/
