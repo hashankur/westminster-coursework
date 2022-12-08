@@ -19,13 +19,13 @@ def inputValidation():
             return "Integer required"
         else:
             if credits not in range(0, 121, 20):
-                return "Out of range."
+                return "Out of range"
             else:
                 creditList.append(credits)
 
 
 def storeOutcomes(value):
-    """Get progression type, credits and append to outcomes list"""
+    """Get progression type, credits then append to outcomes list"""
     progression = (
         "Progress",
         "Progress (module trailer)",
@@ -44,7 +44,7 @@ def storeOutcomes(value):
 
 def anotherSetOfData():
     """Get choice from user to continue or exit"""
-    global run  # Set run to be accessed outside function scope
+    global run  # To change variable outside function scope
     run = input("Enter 'y' for yes or 'q' to quit and view results: ").lower()
     print()
 

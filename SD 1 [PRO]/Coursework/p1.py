@@ -21,13 +21,13 @@ def inputValidation():
             return "Integer required"
         else:
             if credits not in range(0, 121, 20):
-                return "Out of range."
+                return "Out of range"
             else:
                 creditList.append(credits)
 
 
 def storeOutcomes(value):
-    """Get progression type, credits and append to outcomes list"""
+    """Get progression type, credits then append to outcomes list"""
     progression = (
         "Progress",
         "Progress (module trailer)",
@@ -66,8 +66,7 @@ def anotherSetOfData():
 def parts1_2_3():
     print("-" * 60)
     print("Histogram")
-    lineType = ("Progress", "Trailer", "Retriever", "Excluded")
-    for (i, type) in enumerate(lineType):
+    for (i, type) in enumerate(("Progress", "Trailer", "Retriever", "Excluded")):
         # Prints (type, count : stars)
         print(f"{type + ' ' + str(count[i]):12} : {'*' * count[i]}")
     print(f"{len(outcomes)} outcomes in total.")
