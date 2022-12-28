@@ -7,7 +7,6 @@
 run = "y"
 creditList = []
 outcomes = {}
-count = [0, 0, 0, 0]
 
 
 def inputValidation():
@@ -32,7 +31,6 @@ def storeOutcomes(value):
         "Module retriever",
         "Exclude",
     )
-    count[value] += 1
     print(progression[value])
 
     line = {}
@@ -57,6 +55,7 @@ def anotherSetOfData():
 
 
 def part4():
+    """Prints outcomes stored in a dictionary"""
     print("Part 4:")
     for (key, value) in outcomes.items():
         # Prints (id : type - credits)
@@ -69,7 +68,7 @@ def main():
         global id
         creditList = []
 
-        id = input("Student ID: ")
+        id = input("Enter Student ID: ")
         error = inputValidation()
         if error is not None:
             print(error)

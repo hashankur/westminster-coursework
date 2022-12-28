@@ -39,7 +39,7 @@ def storeOutcomes(value):
     creditList.insert(0, progression[value] + " - ")
     outcomes.append(creditList)
 
-    fileWrite.writelines(listToString(creditList) + "\n")
+    fileWrite.write(listToString(creditList) + "\n")
 
 
 def listToString(value):
@@ -57,32 +57,61 @@ def anotherSetOfData():
     if run in ("y", "q"):
         if run == "q":
             fileWrite.close()
-            parts1_2_3()
+            histogram()
+            part2()
+            part3()
     else:
         print("Invalid input")
         anotherSetOfData()
 
 
-def parts1_2_3():
+def histogram():
+    """Prints histogram using count"""
     print("-" * 60)
     print("Histogram")
     for (i, type) in enumerate(("Progress", "Trailer", "Retriever", "Excluded")):
-        # Prints (type, count : stars)
+        # Prints (type - count : stars)
         print(f"{type + ' ' + str(count[i]):12} : {'*' * count[i]}")
     print(f"{len(outcomes)} outcomes in total.")
     print("-" * 60 + "\n")
 
+
+def part2():
+    """Prints outcomes stored in a list"""
     print("Part 2:")
     for outcome in outcomes:
         print(listToString(outcome))
     print()
 
+
+def part3():
+    """Prints outcomes stored in a file"""
     print("Part 3:")
     fileOpen = open("data.txt", "r")
     print(fileOpen.read())
 
 
 def main():
+    userInputValid = False
+    userInput = None
+
+    print("""Who is using this program?
+    1) Student
+    2) Staff member""")
+
+    while not userInputValid:
+        try:
+            userInput = int(input("Enter option '1' or '2': "))
+        except ValueError:
+            print("Invalid input\n")
+        else:
+            if userInput in (1, 2):
+                print()
+                userInputValid = not userInputValid
+            else:
+                print("Invalid input\n")
+                continue
+
     while run == "y":
         global creditList
         creditList = []
@@ -104,9 +133,12 @@ def main():
         else:
             storeOutcomes(2)  # Retriever
 
-        print("\nWould you like to enter another set of data?")
+        if userInput == 1:
+            break
+        else:
+            print("\nWould you like to enter another set of data?")
 
-        anotherSetOfData()
+            anotherSetOfData()
 
 
 main()
