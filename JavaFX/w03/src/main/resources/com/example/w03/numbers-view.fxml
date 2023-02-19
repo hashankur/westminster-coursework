@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.*?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.text.*?>
+
+<VBox alignment="CENTER" spacing="20.0" style="-fx-background-color: #14121D;" xmlns="http://javafx.com/javafx/17.0.2-ea" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.example.w03.NumbersController">
+    <padding>
+        <Insets bottom="20.0" left="20.0" right="20.0" top="20.0" />
+    </padding>
+   <HBox spacing="10.0">
+      <children>
+         <TextField fx:id="num1" />
+         <Label fx:id="inputText1" text="+" textFill="#bfbdb6">
+            <font>
+               <Font size="18.0" />
+            </font>
+         </Label>
+         <TextField fx:id="num2" />
+      </children></HBox>
+
+    <Label fx:id="totalText" textFill="#bfbdb6">
+      <font>
+         <Font name="Iosevka Bold" size="14.0" />
+      </font></Label>
+   <Button onAction="#onTotalButtonClick" text="Calculate Total">
+      <font>
+         <Font name="Iosevka" size="13.0" />
+      </font></Button>
+</VBox>

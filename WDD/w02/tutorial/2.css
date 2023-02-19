@@ -1,0 +1,52 @@
+table,
+th,
+td {
+  border: 1px solid black;
+  border-collapse: collapse;
+}
+
+table {
+  margin: auto;
+}
+
+th,
+td {
+  padding: 0.5em;
+}
+
+th:first-child {
+  font-size: 1.1em;
+}
+
+tr:nth-child(odd) {
+  background-color: aquamarine;
+}
+
+h1,
+h2 {
+  text-align: center;
+}
+
+.swim {
+  background-color: #55b4d4;
+}
+
+.lane {
+  background-color: #95e6cb;
+}
+
+.pt {
+  background-color: #ffdfb3;
+}
+
+.public {
+  background-color: #5ccfe6;
+}
+
+.aClub {
+  background-color: #cccac2;
+}
+
+.jClub {
+  background-color: #dfbfff;
+}
