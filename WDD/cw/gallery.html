@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <title>!!!</title>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <link href="css/gallery.css" rel="stylesheet" />
+  </head>
+
+  <body>
+    <button onclick="changeFontSize()">
+      A
+      <img
+        src="img/icons/arrow-upward-outline.svg"
+        width="24"
+        alt="Increase font size"
+      />
+    </button>
+    <button onclick="changeFontSize()">
+      A
+      <img
+        src="img/icons/arrow-downward-outline.svg"
+        width="24"
+        alt="Decrease font size"
+      />
+    </button>
+
+    <button class="theme-toggle" onclick="setTheme('dark')">
+      <img src="img/icons/moon-outline.svg" width="24" alt="theme icon" />
+    </button>
+    <button class="theme-toggle" onclick="setTheme('light')">
+      <img src="img/icons/sun-outline.svg" width="24" alt="theme icon" />
+    </button>
+    <button class="theme-toggle" onclick="setTheme('lorem')">
+      <img src="img/icons/flash-outline.svg" width="24" alt="theme icon" />
+    </button>
+    <button class="theme-toggle" onclick="setTheme('random')">
+      <img
+        src="img/icons/color-palette-outline.svg"
+        width="24"
+        alt="theme icon"
+      />
+    </button>
+
+    <h1>Top Movies Of Each Year (2010-2021)</h1>
+    <h3>According to IMDB</h3>
+
+    <div id="gallery" class="thumbs-container"></div>
+    <div id="details" class="details-container"></div>
+
+    <script src="js/colorscheme.js"></script>
+    <script src="js/gallery.js"></script>
+  </body>
+</html>

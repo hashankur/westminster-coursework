@@ -1,0 +1,43 @@
+:root,
+:root.light {
+  --bg-color: #fff;
+  --text-color: #000;
+}
+:root.dark {
+  --bg-color: #000;
+  --text-color: #fff;
+}
+
+/* Font sizes */
+:root.increase {
+  --font-size: 1.2em;
+}
+:root.decrease {
+  --font-size: 0.8em;
+}
+
+body {
+  background-color: var(--bg-color);
+  color: var(--text-color);
+  font-family: Iosevka;
+  font-size: var(--font-size);
+  margin: 0 15%;
+}
+
+button {
+  padding: 5px 4px 3px; /* WARNING */
+  font-size: 26px;
+}
+
+.thumbs-container {
+  width: 30vw;
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  grid-gap: 20px;
+  float: left;
+}
+
+.details-container {
+  width: 20vw;
+  float: right;
+}
