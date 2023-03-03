@@ -2,6 +2,7 @@
 :root.light {
   --bg-color: #fff;
   --text-color: #000;
+  --genre-color: #f00;
 }
 :root.dark {
   --bg-color: #000;
@@ -38,6 +39,18 @@ button {
 }
 
 .details-container {
-  width: 20vw;
+  width: 25vw;
   float: right;
+  /* color: green; */
 }
+
+.details-container div {
+  display: none;
+}
+
+.details-container span {
+  color: var(--genre-color);
+}
+
+/* .movie-title { */
+/* } */

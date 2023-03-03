@@ -104,8 +104,11 @@ let wrapperD = document.getElementById("details");
 let details = "";
 
 for (var i = 0; i < imgs.length; i++) {
-    details += `<h2>${imgs[i].name}</h2>
-                <span id="demo">${imgs[i].genres}</span>`;
+    details += `<h2 class="movie-title">${imgs[i].name}</h2>
+                <div id="demo">
+                    <span>${imgs[i].genres}</span>
+                    <p>${imgs[i].desc}</p>
+                </div>`;
 }
 
 wrapperD.innerHTML = details;
@@ -119,9 +122,9 @@ document.getElementById("isSelected").onmouseout = function() {
 };
 
 function mouseOver() {
-    document.getElementById("demo").style.color = "red";
+    document.getElementById("demo").style.display = "block";
 }
 
 function mouseOut() {
-    document.getElementById("demo").style.color = "white";
+    document.getElementById("demo").style.display = "none";
 }
