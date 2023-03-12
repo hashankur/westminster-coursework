@@ -7,23 +7,8 @@
     <link href="css/gallery.css" rel="stylesheet" />
   </head>
 
-  <body>
-    <button onclick="changeFontSize()">
-      A
-      <img
-        src="img/icons/arrow-upward-outline.svg"
-        width="24"
-        alt="Increase font size"
-      />
-    </button>
-    <button onclick="changeFontSize()">
-      A
-      <img
-        src="img/icons/arrow-downward-outline.svg"
-        width="24"
-        alt="Decrease font size"
-      />
-    </button>
+  <body id="content">
+    <button id="toggle-size" onclick="changeFontSize()">A+</button>
 
     <button class="theme-toggle" onclick="setTheme('dark')">
       <img src="img/icons/moon-outline.svg" width="24" alt="theme icon" />
@@ -34,7 +19,7 @@
     <button class="theme-toggle" onclick="setTheme('lorem')">
       <img src="img/icons/flash-outline.svg" width="24" alt="theme icon" />
     </button>
-    <button class="theme-toggle" onclick="setTheme('random')">
+    <button class="theme-toggle" onclick="randomTheme()">
       <img
         src="img/icons/color-palette-outline.svg"
         width="24"
@@ -42,10 +27,11 @@
       />
     </button>
 
-    <h1>Top Movies Of Each Year (2010-2021)</h1>
+    <h1>Top Movies Each Year (2010-2021)</h1>
     <h3>According to IMDB ratings</h3>
 
     <div id="gallery" class="thumbs-container"></div>
+    <div id="title" class="title-container"></div>
     <div id="details" class="details-container"></div>
 
     <script src="js/colorscheme.js"></script>

@@ -1,4 +1,4 @@
-const imgs = [
+const movies = [
     {
         name: "Spider-Man: No Way Home (2021)",
         imgPath:
@@ -89,42 +89,55 @@ const imgs = [
 let wrapper = document.getElementById("gallery");
 let gallery = "";
 
-for (var i = 0; i < imgs.length; i++) {
+for (var i = 0; i < movies.length; i++) {
     gallery += `<img
-        id="isSelected"
-        src="${imgs[i].imgPath}"
-        alt="${imgs[i].name}"
-    />`;
+                    id="isSelected"
+                    src="${movies[i].imgPath}"
+                    alt="${movies[i].name}"
+                />`;
 }
 
 wrapper.innerHTML = gallery;
 
-// Details loop
-let wrapperD = document.getElementById("details");
-let details = "";
+// Title loop
+let wrapperD = document.getElementById("title"); // !WARNING duplicate
+let title = "";
 
-for (var i = 0; i < imgs.length; i++) {
-    details += `<h2 class="movie-title">${imgs[i].name}</h2>
-                <div id="demo">
-                    <span>${imgs[i].genres}</span>
-                    <p>${imgs[i].desc}</p>
-                </div>`;
+for (var i = 0; i < movies.length; i++) {
+    title += `<h2 class="movie-title">${movies[i].name}</h2>`;
 }
 
-wrapperD.innerHTML = details;
+wrapperD.innerHTML = title;
 
 // Hover selection
-document.getElementById("isSelected").onmouseover = function() {
-    mouseOver();
-};
-document.getElementById("isSelected").onmouseout = function() {
-    mouseOut();
-};
+const selected = document.getElementById("gallery");
+const titleD = document.getElementById("title");
+const detailsD = document.getElementById("details");
 
-function mouseOver() {
-    document.getElementById("demo").style.display = "block";
-}
+// This handler will be executed every time the cursor
+// is moved over a different list item
+selected.addEventListener(
+    "mouseover",
+    (event) => {
+        alt = event.target.alt;
+        let item = movies.findIndex((element) => element.name == alt);
 
-function mouseOut() {
-    document.getElementById("demo").style.display = "none";
-}
+        titleD.style.display = "none";
+        detailsD.innerHTML = `<h2 class="movie-title">${movies[item].name}</h2>
+            <div id="${i}">
+                <span>${movies[item].genres}</span>
+                <p>${movies[item].desc}</p>
+            </div>`;
+        detailsD.style.display = "block";
+    },
+    false
+);
+
+selected.addEventListener(
+    "mouseout",
+    () => {
+        titleD.style.display = "block";
+        detailsD.style.display = "none";
+    },
+    false
+);

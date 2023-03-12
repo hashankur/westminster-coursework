@@ -12,6 +12,15 @@ if (localStorage.getItem("theme") === null) {
     setTheme(localStorage.getItem("theme"));
 }
 
+const randomTheme = () => {
+    const themes = ["dark", "light", "lorem"];
+    const random = themes[Math.floor(Math.random() * themes.length)];
+    setTheme(random);
+};
+
 const changeFontSize = () => {
-    document.getElementsByName("body");
+    document.getElementById("content").classList.toggle("font-size");
+    // let btn = document.getElementById("toggle-size").innerHTML("lorem");
+    // if (btn.innerHTML == "Close Curtain") btn.value = "Open Curtain";
+    // else btn.value = "Close Curtain";
 };
