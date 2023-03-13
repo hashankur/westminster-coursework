@@ -1,3 +1,6 @@
+import java.io.File;
+import java.io.FileWriter;
+import java.io.IOException;
 import java.util.Scanner;
 
 public class Theatre {
@@ -82,7 +85,12 @@ public class Theatre {
                     pressEnterToContinue();
                     break;
                 case 5:
+                    saveFile(rows);
+                    break;
                 case 6:
+                    boolean[][] savedRows = readFile(rows);
+                    rows = savedRows;
+                    break;
                 case 7:
                 case 8:
                 default:
@@ -160,6 +168,66 @@ public class Theatre {
             }
             System.out.println();
         }
+    }
+
+    private static void saveFile(boolean[][] rows) {
+        boolean fileCreated;
+        File file;
+        try {
+            file = new File("seating.txt");
+            fileCreated = file.createNewFile();
+
+            if (fileCreated) {
+                System.out.println("File created: " + file.getName());
+            }
+
+            if (file.exists()) {
+                System.out.println("File already exists.");
+            }
+
+            FileWriter writeFile = new FileWriter("seating.txt");
+            // for (int i = 0; i < rows.length; i++) {
+            // writeFile.write(Arrays.toString(rows[i]) + "\n");
+            // }
+            for (int i = 0; i < rows.length; i++) {
+                for (int j = 0; j < rows[i].length; j++) {
+                    writeFile.write(rows[i][j] + " ");
+                }
+                writeFile.write("\n");
+            }
+            writeFile.close();
+
+        } catch (IOException e) {
+            System.out.println("Error creating file.");
+            e.printStackTrace();
+        }
+    }
+
+    private static boolean[][] readFile(boolean[][] rows) {
+        boolean[] row1 = new boolean[12];
+        boolean[] row2 = new boolean[16];
+        boolean[] row3 = new boolean[20];
+
+        boolean[][] fileContents = { row1, row2, row3 };
+
+        try {
+            Scanner input = new Scanner(new File("seating.txt"));
+
+            for (int i = 0; i < fileContents.length; i++) {
+                for (int j = 0; j < fileContents[i].length; j++) {
+                    if (input.hasNextBoolean()) {
+                        fileContents[i][j] = input.nextBoolean();
+                    }
+                }
+            }
+
+            input.close();
+
+        } catch (IOException e) {
+            System.out.println("Error reading file.");
+            e.printStackTrace();
+        }
+        return fileContents;
     }
 
     private static void pressEnterToContinue() {
