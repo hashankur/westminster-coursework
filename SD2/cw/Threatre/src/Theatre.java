@@ -6,7 +6,6 @@ import java.util.Scanner;
 public class Theatre {
     public static void main(String[] args) {
         clearScreen();
-        System.out.println("Welcome to the New Theatre");
 
         boolean[] row1 = new boolean[12];
         boolean[] row2 = new boolean[16];
@@ -14,10 +13,11 @@ public class Theatre {
 
         boolean[][] rows = { row1, row2, row3 };
 
+        Scanner input = new Scanner(System.in);
         boolean runProgram = true;
         while (runProgram) {
 
-            Scanner input = new Scanner(System.in);
+            System.out.println("Welcome to the New Theatre");
             System.out.println(
                     """
                             -------------------------------------------------
@@ -62,42 +62,48 @@ public class Theatre {
                     print_seating_area(rows);
                     pressEnterToContinue();
                     break;
+
                 case 3:
                     System.out.print("Row number (1-3): ");
                     int rowNumC3 = input.nextInt();
                     switch (rowNumC3) {
                         case 1:
-                            cancel_ticket(input, row1);
+                            cancel_ticket(row1);
                             break;
                         case 2:
-                            cancel_ticket(input, row2);
+                            cancel_ticket(row2);
                             break;
                         case 3:
-                            cancel_ticket(input, row3);
+                            cancel_ticket(row3);
                             break;
                         default:
                             System.out.println("Invalid row number. Please try again.");
                     }
                     pressEnterToContinue();
                     break;
+
                 case 4:
                     show_available(rows);
                     pressEnterToContinue();
                     break;
+
                 case 5:
-                    saveFile(rows);
+                    save(rows);
                     break;
+
                 case 6:
-                    boolean[][] savedRows = readFile(rows);
-                    rows = savedRows;
+                    rows = load();
                     break;
+
                 case 7:
                 case 8:
                 default:
                     System.out.println("Invalid option. Please try again.");
-                    pressEnterToContinue();
             }
+            if (opt != 0)
+                pressEnterToContinue();
         }
+        input.close();
     }
 
     private static void buy_ticket(Scanner input, boolean[][] rows, int rowNum) {
@@ -111,9 +117,14 @@ public class Theatre {
             row[seatNum] = true;
             System.out.println("\nReserved seat " + (seatNum + 1) + " of row " + rowNum);
         }
+        // input.close();
     }
 
     private static void print_seating_area(boolean[][] rows) {
+        System.out.println("     ***********");
+        System.out.println("     *  STAGE  *");
+        System.out.println("     ***********");
+
         int[] spaces = { 4, 2, 0 }; // Left padding for seating area
 
         // Loop through rows 1-3 arrays
@@ -139,7 +150,8 @@ public class Theatre {
         }
     }
 
-    private static void cancel_ticket(Scanner input, boolean[] row) {
+    private static void cancel_ticket(boolean[] row) {
+        Scanner input = new Scanner(System.in);
         System.out.print("Seat number: ");
         int seatNum = input.nextInt() - 1;
 
@@ -149,6 +161,7 @@ public class Theatre {
         } else {
             System.out.println("\nInvalid request. Seat not occupied.");
         }
+        // input.close();
     }
 
     private static void show_available(boolean[][] rows) {
@@ -170,7 +183,7 @@ public class Theatre {
         }
     }
 
-    private static void saveFile(boolean[][] rows) {
+    private static void save(boolean[][] rows) {
         boolean fileCreated;
         File file;
         try {
@@ -189,9 +202,9 @@ public class Theatre {
             // for (int i = 0; i < rows.length; i++) {
             // writeFile.write(Arrays.toString(rows[i]) + "\n");
             // }
-            for (int i = 0; i < rows.length; i++) {
-                for (int j = 0; j < rows[i].length; j++) {
-                    writeFile.write(rows[i][j] + " ");
+            for (boolean[] row : rows) {
+                for (boolean seat : row) {
+                    writeFile.write(seat + " ");
                 }
                 writeFile.write("\n");
             }
@@ -203,7 +216,7 @@ public class Theatre {
         }
     }
 
-    private static boolean[][] readFile(boolean[][] rows) {
+    private static boolean[][] load() {
         boolean[] row1 = new boolean[12];
         boolean[] row2 = new boolean[16];
         boolean[] row3 = new boolean[20];
@@ -227,6 +240,7 @@ public class Theatre {
             System.out.println("Error reading file.");
             e.printStackTrace();
         }
+        System.out.println("File loaded.");
         return fileContents;
     }
 
