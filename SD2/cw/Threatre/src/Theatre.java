@@ -1,6 +1,7 @@
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.Scanner;
 
 public class Theatre {
@@ -10,8 +11,8 @@ public class Theatre {
         boolean[] row1 = new boolean[12];
         boolean[] row2 = new boolean[16];
         boolean[] row3 = new boolean[20];
-
         boolean[][] rows = { row1, row2, row3 };
+        ArrayList<Ticket> tickets = new ArrayList<>();
 
         Scanner input = new Scanner(System.in);
         boolean runProgram = true;
@@ -47,44 +48,31 @@ public class Theatre {
                     int rowNumC1 = input.nextInt();
                     switch (rowNumC1) {
                         case 1, 2, 3:
-                            buy_ticket(input, rows, rowNumC1);
+                            buy_ticket(rows, rowNumC1, tickets);
                             break;
                         default:
                             System.out.println("Invalid row number. Please try again.");
                     }
-                    pressEnterToContinue();
                     break;
 
                 case 2:
-                    System.out.println("     ***********");
-                    System.out.println("     *  STAGE  *");
-                    System.out.println("     ***********");
                     print_seating_area(rows);
-                    pressEnterToContinue();
                     break;
 
                 case 3:
                     System.out.print("Row number (1-3): ");
                     int rowNumC3 = input.nextInt();
                     switch (rowNumC3) {
-                        case 1:
-                            cancel_ticket(row1);
-                            break;
-                        case 2:
-                            cancel_ticket(row2);
-                            break;
-                        case 3:
-                            cancel_ticket(row3);
+                        case 1, 2, 3:
+                            cancel_ticket(rows, rowNumC3, tickets);
                             break;
                         default:
                             System.out.println("Invalid row number. Please try again.");
                     }
-                    pressEnterToContinue();
                     break;
 
                 case 4:
                     show_available(rows);
-                    pressEnterToContinue();
                     break;
 
                 case 5:
@@ -96,6 +84,9 @@ public class Theatre {
                     break;
 
                 case 7:
+                    show_tickets_info(tickets);
+                    break;
+
                 case 8:
                 default:
                     System.out.println("Invalid option. Please try again.");
@@ -106,16 +97,28 @@ public class Theatre {
         input.close();
     }
 
-    private static void buy_ticket(Scanner input, boolean[][] rows, int rowNum) {
+    private static void buy_ticket(boolean[][] rows, int rowNum, ArrayList<Ticket> tickets) {
+        Scanner input = new Scanner(System.in);
         boolean[] row = rows[rowNum - 1];
         System.out.print("Seat number: ");
-        int seatNum = input.nextInt() - 1;
+        int seatNum = input.nextInt();
 
-        if (row[seatNum]) {
+        if (row[seatNum - 1]) {
             System.out.println("\nSeat not available");
         } else {
-            row[seatNum] = true;
-            System.out.println("\nReserved seat " + (seatNum + 1) + " of row " + rowNum);
+             System.out.print("\nName: ");
+             String name = input.next();
+             System.out.print("Surname: ");
+             String sname = input.next();
+             System.out.print("Email: ");
+             String email = input.next();
+
+             Person person = new Person(name, sname, email);
+             int[] ticketPrice = {30, 20, 10};
+             tickets.add(new Ticket(rowNum, seatNum, ticketPrice[rowNum - 1], person));
+
+            row[seatNum - 1] = true;
+            System.out.println("\nReserved seat " + (seatNum) + " of row " + rowNum);
         }
         // input.close();
     }
@@ -150,13 +153,19 @@ public class Theatre {
         }
     }
 
-    private static void cancel_ticket(boolean[] row) {
+    private static void cancel_ticket(boolean[][] rows, int rowNum, ArrayList<Ticket> tickets) {
         Scanner input = new Scanner(System.in);
+        boolean[] row = rows[rowNum - 1];
         System.out.print("Seat number: ");
-        int seatNum = input.nextInt() - 1;
+        int seatNum = input.nextInt();
 
-        if (row[seatNum]) {
-            row[seatNum] = false;
+        if (row[seatNum - 1]) {
+            row[seatNum - 1] = false;
+
+            for (int i = 0; i < tickets.size(); i++) {
+                Ticket ticket = tickets.get(i);
+                if (ticket.isEqual(rowNum, seatNum)) tickets.remove(i);
+            }
             System.out.println("\nTicket cancelled.");
         } else {
             System.out.println("\nInvalid request. Seat not occupied.");
@@ -244,6 +253,19 @@ public class Theatre {
         return fileContents;
     }
 
+    private static void show_tickets_info(ArrayList<Ticket> tickets) {
+        if (tickets.isEmpty()) {
+            System.out.println("No tickets bought.");
+        } else {
+            int totalPrice = 0;
+            for (Ticket ticket: tickets) {
+                ticket.print();
+                totalPrice += ticket.getPrice();
+            }
+            System.out.println("\nTotal price of all tickets: £" + totalPrice);
+        }
+    }
+
     private static void pressEnterToContinue() {
         Scanner scanner = new Scanner(System.in);
         System.out.print("\nPress ENTER to continue...");
@@ -254,7 +276,7 @@ public class Theatre {
     private static void clearScreen() {
         // TODO: Check support for Windows !!! [CLS]
         // System.out.print("\033[2J\033[1;1H");
-        System.out.print("\033[H\033[2J"); // What each esc code does?
+        System.out.print("\n\033[H\033[2J"); // What each esc code does?
         System.out.flush();
     }
 }
