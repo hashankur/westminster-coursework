@@ -13,6 +13,7 @@ public class Theatre {
         boolean[] row3 = new boolean[20];
         boolean[][] rows = { row1, row2, row3 };
         ArrayList<Ticket> tickets = new ArrayList<>();
+        ArrayList<Ticket> sortedTickets;
 
         Scanner input = new Scanner(System.in);
         boolean runProgram = true;
@@ -88,6 +89,10 @@ public class Theatre {
                     break;
 
                 case 8:
+                     sortedTickets = new ArrayList<>(tickets);
+                    sort_tickets(sortedTickets).forEach(Ticket::print);
+                    break;
+
                 default:
                     System.out.println("Invalid option. Please try again.");
             }
@@ -106,16 +111,16 @@ public class Theatre {
         if (row[seatNum - 1]) {
             System.out.println("\nSeat not available");
         } else {
-             System.out.print("\nName: ");
-             String name = input.next();
-             System.out.print("Surname: ");
-             String sname = input.next();
-             System.out.print("Email: ");
-             String email = input.next();
+            System.out.print("\nName: ");
+            String name = input.next();
+            System.out.print("Surname: ");
+            String sname = input.next();
+            System.out.print("Email: ");
+            String email = input.next();
 
-             Person person = new Person(name, sname, email);
-             int[] ticketPrice = {30, 20, 10};
-             tickets.add(new Ticket(rowNum, seatNum, ticketPrice[rowNum - 1], person));
+            Person person = new Person(name, sname, email);
+            int[] ticketPrice = { 30, 20, 10 };
+            tickets.add(new Ticket(rowNum, seatNum, ticketPrice[rowNum - 1], person));
 
             row[seatNum - 1] = true;
             System.out.println("\nReserved seat " + (seatNum) + " of row " + rowNum);
@@ -132,7 +137,6 @@ public class Theatre {
 
         // Loop through rows 1-3 arrays
         for (int i = 0; i < rows.length; i++) {
-            // boolean[] row = rows[j];
             System.out.print(" ".repeat(spaces[i]));
 
             // Loop each row for seats
@@ -164,7 +168,8 @@ public class Theatre {
 
             for (int i = 0; i < tickets.size(); i++) {
                 Ticket ticket = tickets.get(i);
-                if (ticket.isEqual(rowNum, seatNum)) tickets.remove(i);
+                if (ticket.isEqual(rowNum, seatNum))
+                    tickets.remove(i);
             }
             System.out.println("\nTicket cancelled.");
         } else {
@@ -208,9 +213,6 @@ public class Theatre {
             }
 
             FileWriter writeFile = new FileWriter("seating.txt");
-            // for (int i = 0; i < rows.length; i++) {
-            // writeFile.write(Arrays.toString(rows[i]) + "\n");
-            // }
             for (boolean[] row : rows) {
                 for (boolean seat : row) {
                     writeFile.write(seat + " ");
@@ -258,12 +260,32 @@ public class Theatre {
             System.out.println("No tickets bought.");
         } else {
             int totalPrice = 0;
-            for (Ticket ticket: tickets) {
+            for (Ticket ticket : tickets) {
                 ticket.print();
                 totalPrice += ticket.getPrice();
             }
             System.out.println("\nTotal price of all tickets: £" + totalPrice);
         }
+    }
+
+    private static ArrayList<Ticket> sort_tickets(ArrayList<Ticket> array) {
+        // Bubble sort - Optimized
+        int bottom = array.size() - 2;
+        Ticket temp;
+        boolean exchanged = true;
+        while (exchanged) {
+            exchanged = false;
+            for (int i = 0; i <= bottom; i++) {
+                if (array.get(i).getPrice() > array.get(i + 1).getPrice()) {
+                    temp = array.get(i);
+                    array.set(i, array.get(i + 1));
+                    array.set(i + 1, temp);
+                    exchanged = true;
+                }
+            }
+            bottom--;
+        }
+        return array;
     }
 
     private static void pressEnterToContinue() {
@@ -274,7 +296,6 @@ public class Theatre {
     }
 
     private static void clearScreen() {
-        // TODO: Check support for Windows !!! [CLS]
         // System.out.print("\033[2J\033[1;1H");
         System.out.print("\n\033[H\033[2J"); // What each esc code does?
         System.out.flush();
