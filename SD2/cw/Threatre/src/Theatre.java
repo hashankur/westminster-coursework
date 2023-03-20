@@ -2,6 +2,7 @@ import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.InputMismatchException;
 import java.util.Scanner;
 
 public class Theatre {
@@ -15,7 +16,6 @@ public class Theatre {
         ArrayList<Ticket> tickets = new ArrayList<>();
         ArrayList<Ticket> sortedTickets;
 
-        Scanner input = new Scanner(System.in);
         boolean runProgram = true;
         while (runProgram) {
 
@@ -35,8 +35,7 @@ public class Theatre {
                             0) Quit
                             -------------------------------------------------
                             """);
-            System.out.print("Enter option: ");
-            int opt = input.nextInt();
+            int opt = validateInputInt("");
             clearScreen();
 
             switch (opt) {
@@ -45,15 +44,7 @@ public class Theatre {
                     break;
 
                 case 1:
-                    System.out.print("Row number: ");
-                    int rowNumC1 = input.nextInt();
-                    switch (rowNumC1) {
-                        case 1, 2, 3:
-                            buy_ticket(rows, rowNumC1, tickets);
-                            break;
-                        default:
-                            System.out.println("Invalid row number. Please try again.");
-                    }
+                    buy_ticket(rows, tickets);
                     break;
 
                 case 2:
@@ -61,15 +52,7 @@ public class Theatre {
                     break;
 
                 case 3:
-                    System.out.print("Row number (1-3): ");
-                    int rowNumC3 = input.nextInt();
-                    switch (rowNumC3) {
-                        case 1, 2, 3:
-                            cancel_ticket(rows, rowNumC3, tickets);
-                            break;
-                        default:
-                            System.out.println("Invalid row number. Please try again.");
-                    }
+                    cancel_ticket(rows, tickets);
                     break;
 
                 case 4:
@@ -82,6 +65,7 @@ public class Theatre {
 
                 case 6:
                     rows = load();
+                    print_seating_area(rows);
                     break;
 
                 case 7:
@@ -99,18 +83,21 @@ public class Theatre {
             if (opt != 0)
                 pressEnterToContinue();
         }
-        input.close();
+//        input.close();
     }
 
-    private static void buy_ticket(boolean[][] rows, int rowNum, ArrayList<Ticket> tickets) {
-        Scanner input = new Scanner(System.in);
+    private static void buy_ticket(boolean[][] rows, ArrayList<Ticket> tickets) {
+        int rowNum = validateInputInt("Row");
+        rowNum = validateInputRowArray(rowNum, rows);
         boolean[] row = rows[rowNum - 1];
-        System.out.print("Seat number: ");
-        int seatNum = input.nextInt();
+
+        int seatNum = validateInputInt("Seat");
+        seatNum = validateInputSeatArray(seatNum, row);
 
         if (row[seatNum - 1]) {
             System.out.println("\nSeat not available");
         } else {
+            Scanner input = new Scanner(System.in);
             System.out.print("\nName: ");
             String name = input.next();
             System.out.print("Surname: ");
@@ -157,11 +144,13 @@ public class Theatre {
         }
     }
 
-    private static void cancel_ticket(boolean[][] rows, int rowNum, ArrayList<Ticket> tickets) {
-        Scanner input = new Scanner(System.in);
+    private static void cancel_ticket(boolean[][] rows, ArrayList<Ticket> tickets) {
+        int rowNum = validateInputInt("Row");
+        rowNum = validateInputRowArray(rowNum, rows);
         boolean[] row = rows[rowNum - 1];
-        System.out.print("Seat number: ");
-        int seatNum = input.nextInt();
+
+        int seatNum = validateInputInt("Seat");
+        seatNum = validateInputSeatArray(seatNum, row);
 
         if (row[seatNum - 1]) {
             row[seatNum - 1] = false;
@@ -251,7 +240,7 @@ public class Theatre {
             System.out.println("Error reading file.");
             e.printStackTrace();
         }
-        System.out.println("File loaded.");
+        System.out.println("File loaded.\n");
         return fileContents;
     }
 
@@ -299,5 +288,55 @@ public class Theatre {
         // System.out.print("\033[2J\033[1;1H");
         System.out.print("\n\033[H\033[2J"); // What each esc code does?
         System.out.flush();
+    }
+
+    private static int validateInputInt(String type) {
+        if (type == "Row") System.out.print(type + " number (1, 2 or 3): ");
+        else if (type == "Seat") System.out.print(type + " number: ");
+        else System.out.print("Enter option: ");
+
+        Scanner input = new Scanner(System.in);
+        int num;
+        try {
+            num = input.nextInt();
+        } catch (InputMismatchException e) {
+            System.out.println("\nPlease input a number");
+            num = validateInputInt(type);
+        }
+        return num;
+    }
+
+    private static int validateInputRowArray(int rowNum, boolean[][] rows) {
+        boolean[] row = {};
+        boolean error = true;
+        while (error) {
+
+            try {
+                row = rows[rowNum - 1];
+                error = false;
+
+            } catch (ArrayIndexOutOfBoundsException e) {
+                System.out.println("\nInvalid row number. Please try again.");
+                rowNum = validateInputInt("Row");
+            }
+        }
+        return rowNum;
+    }
+
+    private static int validateInputSeatArray(int seatNum, boolean[] row) {
+        boolean error = true;
+        boolean test = false;
+        while (error) {
+
+            try {
+                test = row[seatNum - 1];
+                error = false;
+
+            } catch (ArrayIndexOutOfBoundsException e) {
+                System.out.println("\nInvalid seat number. Please try again.");
+                seatNum = validateInputInt("Seat");
+            }
+        }
+        return seatNum;
     }
 }
