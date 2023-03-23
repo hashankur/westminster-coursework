@@ -18,7 +18,7 @@ public class Ticket {
     }
 
     public int getPrice() {
-        return price;
+        return this.price;
     }
 
     public boolean isEqual(int row, int seat) {
