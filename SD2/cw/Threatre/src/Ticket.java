@@ -14,7 +14,7 @@ public class Ticket {
     public void print() {
         person.getDetails();
         System.out.println("Row: " + row + ", Seat: " + seat);
-        System.out.println("Price: £" + price);
+        System.out.println("Price: Rs. " + price);
     }
 
     public int getPrice() {

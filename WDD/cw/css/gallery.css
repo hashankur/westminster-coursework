@@ -1,4 +1,4 @@
-:root.ight {
+:root.light {
   --bg-color: #fff;
   --text-color: #000;
   --genre-color: #f00;
@@ -50,6 +50,7 @@ h3 {
   width: 25vw;
   float: right;
   /* color: green; */
+  transition: all 0.5s ease-in-out;
 }
 
 /* .details-container div { */

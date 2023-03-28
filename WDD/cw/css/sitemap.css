@@ -1,0 +1,50 @@
+:root {
+  --bg: #1d3557;
+  --fg: #f1faee;
+  --red: #e63946;
+  --blue: #a8dadc;
+}
+
+body {
+  background-color: var(--bg);
+  color-scheme: var(--fg);
+}
+
+h1 {
+  color: var(--blue);
+}
+
+.container {
+  margin: auto;
+  width: 1800px;
+}
+
+/* svg { */
+/* } */
+
+.link circle {
+  fill: #111827;
+}
+
+.link text {
+  fill: var(--fg);
+  text-align: center;
+  text-anchor: middle;
+  font-size: 25px;
+  line-height: 1.25;
+}
+
+.link:hover circle {
+  stroke: var(--red);
+  stroke-width: 5px;
+}
+
+.link:hover text {
+  fill: var(--red);
+}
+
+path {
+  fill: none;
+  stroke: black;
+  stroke-width: 5px;
+}

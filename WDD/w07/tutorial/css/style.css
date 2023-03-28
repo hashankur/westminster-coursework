@@ -1,0 +1,62 @@
+body {
+  background-color: darkslategrey;
+  color: aliceblue;
+}
+
+h1,
+h3,
+span {
+  text-align: center;
+}
+
+.container {
+}
+
+.row {
+  width: 1100px;
+  margin: auto;
+}
+
+.card {
+  background-color: darkseagreen;
+  float: left;
+}
+
+.card:not(:last-child) {
+  margin: 70px 10px 0;
+}
+
+.info {
+  margin: 20px;
+  color: black;
+}
+
+.info h3 {
+  color: black;
+}
+
+.info span {
+  color: purple;
+}
+
+.order {
+  background-color: darkslateblue;
+  width: 300px;
+  height: 440px;
+  float: left;
+  text-align: center;
+}
+
+.order h3 {
+  margin: 18px 0;
+}
+
+.order .card {
+  margin: 10px 35px;
+}
+
+.options {
+  width: 1100px;
+  padding: 10px;
+  margin: auto;
+}
