@@ -23,7 +23,7 @@ class WestminsterShoppingManager implements ShoppingManager {
         System.out.print("Enter product name: ");
         String productName = input.next();
         System.out.print("Enter price: ");
-        int price = input.nextInt();
+        int price = App.validate_input_int(input);
 
         switch (choice) {
             case 1 -> {
@@ -38,7 +38,7 @@ class WestminsterShoppingManager implements ShoppingManager {
                 System.out.print("Enter brand: ");
                 String brand = input.next();
                 System.out.print("Enter warranty: ");
-                int warranty = input.nextInt();
+                int warranty = App.validate_input_int(input);
 
                 products.add(new Electronics(productID, productName, price, brand, warranty));
             }
@@ -68,10 +68,12 @@ class WestminsterShoppingManager implements ShoppingManager {
             System.out.println("No products in list");
         } else {
             // sort products alphabetically
-            products.sort((product1, product2) -> product1.getProductName().compareTo(product2.getProductName()));
+            products.sort((product1, product2) -> product1.getProductID().compareTo(product2.getProductID()));
             for (Product product : products) {
+                System.out.println("-".repeat(50));
                 System.out.println(product);
             }
+            System.out.println("-".repeat(50));
         }
     }
 
@@ -133,7 +135,8 @@ class WestminsterShoppingManager implements ShoppingManager {
                 if (line[0].equals("C")) {
                     fileContent.add(new Clothing(line[1], line[2], Integer.parseInt(line[3]), line[4], line[5]));
                 } else if (line[0].equals("E")) {
-                    fileContent.add(new Electronics(line[1], line[2], Integer.parseInt(line[3]), line[4], Integer.parseInt(line[5])));
+                    fileContent.add(new Electronics(line[1], line[2], Integer.parseInt(line[3]), line[4],
+                            Integer.parseInt(line[5])));
                 }
 
             }

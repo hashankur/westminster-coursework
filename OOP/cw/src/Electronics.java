@@ -23,4 +23,11 @@ public class Electronics extends Product {
     public void setWarranty(int warranty) {
         this.warranty = warranty;
     }
+
+    @Override
+    public String toString() {
+        return super.toString() + "\n" +
+                "Brand: " + this.brand + "\n" +
+                "Warranty: " + this.warranty;
+    }
 }
