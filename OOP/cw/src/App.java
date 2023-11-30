@@ -20,6 +20,7 @@ public class App {
             System.out.println("\t3) Print product list");
             System.out.println("\t4) Save to file");
             System.out.println("\t5) Read from file");
+            System.out.println("\t6) Open GUI");
             System.out.println("\t0) Exit");
             System.out.print("Enter your choice: ");
 
@@ -43,6 +44,7 @@ public class App {
                 case 3 -> manager.printProductList(products);
                 case 4 -> manager.saveToFile(products);
                 case 5 -> products = manager.readFromFile();
+                case 6 -> manager.spawnMainWindow();
                 // case 5 -> System.exit(0);
                 default -> System.out.println("Invalid choice!");
             }

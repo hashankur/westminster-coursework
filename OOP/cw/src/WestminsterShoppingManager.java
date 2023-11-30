@@ -4,6 +4,18 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Scanner;
 
+import java.awt.BorderLayout;
+import java.awt.FlowLayout;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+
+import javax.swing.JButton;
+import javax.swing.JFrame;
+import javax.swing.JPanel;
+import javax.swing.JScrollPane;
+import javax.swing.JTable;
+import javax.swing.JTextArea;
+
 class WestminsterShoppingManager implements ShoppingManager {
 
     static final String FILE_PATH = "products.txt";
@@ -98,7 +110,7 @@ class WestminsterShoppingManager implements ShoppingManager {
                     Clothing clothing = (Clothing) product;
                     writeFile.write(String.format(
                             "%s;%s;%s;%s;%s;%s\n",
-                            'C', // 'C' for Clothing
+                            clothing.getClass().getSimpleName(),
                             clothing.getProductID(),
                             clothing.getProductName(),
                             clothing.getPrice(),
@@ -108,7 +120,7 @@ class WestminsterShoppingManager implements ShoppingManager {
                     Electronics electronics = (Electronics) product;
                     writeFile.write(String.format(
                             "%s;%s;%s;%s;%s;%s\n",
-                            'E', // 'E' for Electronics
+                            electronics.getClass().getSimpleName(),
                             electronics.getProductID(),
                             electronics.getProductName(),
                             electronics.getPrice(),
@@ -132,9 +144,9 @@ class WestminsterShoppingManager implements ShoppingManager {
 
             while (input.hasNextLine()) {
                 String[] line = input.nextLine().split(";");
-                if (line[0].equals("C")) {
+                if (line[0].equals("Clothing")) {
                     fileContent.add(new Clothing(line[1], line[2], Integer.parseInt(line[3]), line[4], line[5]));
-                } else if (line[0].equals("E")) {
+                } else if (line[0].equals("Electronics")) {
                     fileContent.add(new Electronics(line[1], line[2], Integer.parseInt(line[3]), line[4],
                             Integer.parseInt(line[5])));
                 }
@@ -147,5 +159,83 @@ class WestminsterShoppingManager implements ShoppingManager {
         }
         System.out.println("File loaded.\n");
         return fileContent;
+    }
+
+    public void spawnMainWindow() {
+        JFrame frame = new JFrame("Westminster Shopping Manager");
+        frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        frame.setSize(800, 500);
+        JPanel contentPane = new JPanel(new BorderLayout());
+
+        // Button
+        JPanel buttonPanel = new JPanel(new FlowLayout());
+        JButton shoppingCartBtn = new JButton("Shopping Cart");
+        shoppingCartBtn.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                spawnCartWindow();
+            }
+        });
+        buttonPanel.add(shoppingCartBtn);
+
+        // Table
+        String columnNames[] = { "Product ID", "Name", "Category", "Price(£)", "Info" };
+        if (App.products.size() != 0) {
+            Object[][] data = new Object[App.products.size()][5];
+            for (int i = 0; i < App.products.size(); i++) {
+                data[i][0] = App.products.get(i).getProductID();
+                data[i][1] = App.products.get(i).getProductName();
+                data[i][2] = App.products.get(i).getClass().getSimpleName();
+                data[i][3] = App.products.get(i).getPrice();
+                data[i][4] = "3423432";
+            }
+
+            JTable table = new JTable(data, columnNames);
+            JScrollPane scrollPane = new JScrollPane(table);
+            table.setFillsViewportHeight(true);
+            contentPane.add(scrollPane, BorderLayout.CENTER);
+
+            String details = "";
+            JTextArea textArea = new JTextArea(details);
+            // if (table.getSelectedRow() != -1) {
+            // textArea.setText(App.products.get(table.getSelectedRow()).toString());
+            // }
+            details = String.format(
+                    "Selected Product - Details\n%s",
+                    App.products.get(0).toString());
+            textArea.setEditable(false);
+            contentPane.add(textArea, BorderLayout.WEST);
+        } else {
+            JTextArea textArea = new JTextArea("No products available.");
+            textArea.setEditable(false);
+            contentPane.add(textArea, BorderLayout.CENTER);
+        }
+
+        JPanel addToCartPanel = new JPanel(new FlowLayout());
+        JButton addToCartBtn = new JButton("Add to Shopping Cart");
+        addToCartPanel.add(addToCartBtn);
+
+        contentPane.add(buttonPanel, BorderLayout.EAST);
+        contentPane.add(addToCartPanel, BorderLayout.SOUTH);
+        frame.setContentPane(contentPane);
+        frame.setVisible(true);
+    }
+
+    public void spawnCartWindow() {
+        JFrame frame = new JFrame("Shopping Cart");
+        frame.setDefaultCloseOperation(JFrame.HIDE_ON_CLOSE);
+        frame.setSize(500, 500);
+        JPanel contentPane = new JPanel(new BorderLayout());
+
+        // Table
+        String columnNames[] = { "Product", "Quantity", "Price" };
+        Object[][] data = { { "1", "2", "3" }, { "6", "7", "8" } };
+        JTable table = new JTable(data, columnNames);
+        JScrollPane scrollPane = new JScrollPane(table);
+        table.setFillsViewportHeight(true);
+
+        contentPane.add(scrollPane, BorderLayout.CENTER);
+        frame.setContentPane(contentPane);
+        frame.setVisible(true);
     }
 }

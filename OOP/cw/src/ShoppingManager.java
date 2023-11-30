@@ -12,4 +12,6 @@ public interface ShoppingManager {
     public ArrayList<Product> readFromFile();
 
     public void deleteProduct(int validate_input_int);
+
+    public void spawnMainWindow();
 }
