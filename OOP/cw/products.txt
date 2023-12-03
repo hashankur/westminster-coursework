@@ -1,1 +1,4 @@
-C;asdfa;adfdfdfdf;6565;adf;ad
+Electronics;1000;sfg;65;adf;3232
+Electronics;1312;sfsg;65;asd;2002
+Clothing;asdf;asdfasdf;65;sd;saf
+Clothing;asdfa;adfdfdfdf;6565;adf;ad

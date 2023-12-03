@@ -10,8 +10,7 @@ public class App {
         Scanner input = new Scanner(System.in);
         int option = 0;
 
-        boolean runProgram = true;
-        while (runProgram) {
+        while (true) {
 
             System.out.println("Welcome to Westminster Shopping Manager");
             System.out.println("Select an option:");
@@ -35,7 +34,7 @@ public class App {
             System.out.println();
 
             switch (option) {
-                case 0 -> runProgram = false;
+                case 0 -> System.exit(0);
                 case 1 -> manager.addProduct(products);
                 case 2 -> {
                     System.out.print("Enter product ID: ");
@@ -45,18 +44,25 @@ public class App {
                 case 4 -> manager.saveToFile(products);
                 case 5 -> products = manager.readFromFile();
                 case 6 -> manager.spawnMainWindow();
-                // case 5 -> System.exit(0);
                 default -> System.out.println("Invalid choice!");
             }
         }
     }
 
-    private static int validate_input_int(Scanner input) {
+    public static int validate_input_int(Scanner input) {
         while (!input.hasNextInt()) {
             System.out.print("Invalid input. Please enter a number: ");
             input.next(); // Discard the invalid input
         }
         return input.nextInt();
+    }
+
+    public static String validate_input_string(Scanner input) {
+        while (input.hasNextInt()) {
+            System.out.print("Invalid input. Please enter a product ID: ");
+            input.next(); // Discard the invalid input
+        }
+        return input.next();
     }
 
 }

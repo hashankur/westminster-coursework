@@ -5,12 +5,16 @@ import java.util.ArrayList;
 import java.util.Scanner;
 
 import java.awt.BorderLayout;
+import java.awt.Dimension;
 import java.awt.FlowLayout;
+import java.awt.Toolkit;
+import java.awt.Window;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
 import javax.swing.JButton;
 import javax.swing.JFrame;
+import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTable;
@@ -163,12 +167,12 @@ class WestminsterShoppingManager implements ShoppingManager {
 
     public void spawnMainWindow() {
         JFrame frame = new JFrame("Westminster Shopping Manager");
-        frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        frame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
         frame.setSize(800, 500);
         JPanel contentPane = new JPanel(new BorderLayout());
 
         // Button
-        JPanel buttonPanel = new JPanel(new FlowLayout());
+        JPanel buttonPanel = new JPanel(new FlowLayout(FlowLayout.RIGHT));
         JButton shoppingCartBtn = new JButton("Shopping Cart");
         shoppingCartBtn.addActionListener(new ActionListener() {
             @Override
@@ -178,16 +182,31 @@ class WestminsterShoppingManager implements ShoppingManager {
         });
         buttonPanel.add(shoppingCartBtn);
 
+        // Product category
+        // JPanel categoryPanel = new JPanel(new FlowLayout(FlowLayout.RIGHT));
+        // JLabel categoryLabel = new JLabel("Select Product Category:");
+        // categoryPanel.add(categoryLabel);
+
         // Table
         String columnNames[] = { "Product ID", "Name", "Category", "Price(£)", "Info" };
         if (App.products.size() != 0) {
             Object[][] data = new Object[App.products.size()][5];
             for (int i = 0; i < App.products.size(); i++) {
-                data[i][0] = App.products.get(i).getProductID();
-                data[i][1] = App.products.get(i).getProductName();
-                data[i][2] = App.products.get(i).getClass().getSimpleName();
-                data[i][3] = App.products.get(i).getPrice();
-                data[i][4] = "3423432";
+                if (App.products.get(i) instanceof Clothing) {
+                    Clothing clothing = (Clothing) App.products.get(i);
+                    data[i][0] = clothing.getProductID();
+                    data[i][1] = clothing.getProductName();
+                    data[i][2] = clothing.getClass().getSimpleName();
+                    data[i][3] = clothing.getPrice();
+                    data[i][4] = clothing.getSize() + ", " + clothing.getColour();
+                } else if (App.products.get(i) instanceof Electronics) {
+                    Electronics electronics = (Electronics) App.products.get(i);
+                    data[i][0] = electronics.getProductID();
+                    data[i][1] = electronics.getProductName();
+                    data[i][2] = electronics.getClass().getSimpleName();
+                    data[i][3] = electronics.getPrice();
+                    data[i][4] = electronics.getBrand() + ", " + electronics.getWarranty();
+                }
             }
 
             JTable table = new JTable(data, columnNames);
@@ -211,20 +230,23 @@ class WestminsterShoppingManager implements ShoppingManager {
             contentPane.add(textArea, BorderLayout.CENTER);
         }
 
+        // Add to cart
         JPanel addToCartPanel = new JPanel(new FlowLayout());
         JButton addToCartBtn = new JButton("Add to Shopping Cart");
         addToCartPanel.add(addToCartBtn);
 
-        contentPane.add(buttonPanel, BorderLayout.EAST);
+        contentPane.add(buttonPanel, BorderLayout.NORTH);
+        // contentPane.add(categoryPanel, BorderLayout.NORTH);
         contentPane.add(addToCartPanel, BorderLayout.SOUTH);
         frame.setContentPane(contentPane);
         frame.setVisible(true);
+        centreWindow(frame);
     }
 
-    public void spawnCartWindow() {
+    private void spawnCartWindow() {
         JFrame frame = new JFrame("Shopping Cart");
         frame.setDefaultCloseOperation(JFrame.HIDE_ON_CLOSE);
-        frame.setSize(500, 500);
+        frame.setSize(500, 300);
         JPanel contentPane = new JPanel(new BorderLayout());
 
         // Table
@@ -237,5 +259,13 @@ class WestminsterShoppingManager implements ShoppingManager {
         contentPane.add(scrollPane, BorderLayout.CENTER);
         frame.setContentPane(contentPane);
         frame.setVisible(true);
+        centreWindow(frame);
+    }
+
+    public static void centreWindow(Window frame) {
+        Dimension dimension = Toolkit.getDefaultToolkit().getScreenSize();
+        int x = (int) ((dimension.getWidth() - frame.getWidth()) / 2);
+        int y = (int) ((dimension.getHeight() - frame.getHeight()) / 2);
+        frame.setLocation(x, y);
     }
 }
