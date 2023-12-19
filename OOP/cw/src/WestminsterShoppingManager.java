@@ -156,9 +156,9 @@ class WestminsterShoppingManager implements ShoppingManager {
             while (input.hasNextLine()) {
                 String[] line = input.nextLine().split(";");
                 if (line[0].equals("Clothing")) {
-                    fileContent.add(new Clothing(line[1], line[2], Integer.parseInt(line[3]), line[4], line[5]));
+                    fileContent.add(new Clothing(line[1], line[2], Double.parseDouble(line[3]), line[4], line[5]));
                 } else if (line[0].equals("Electronics")) {
-                    fileContent.add(new Electronics(line[1], line[2], Integer.parseInt(line[3]), line[4],
+                    fileContent.add(new Electronics(line[1], line[2], Double.parseDouble(line[3]), line[4],
                             Integer.parseInt(line[5])));
                 }
 
@@ -212,7 +212,7 @@ class WestminsterShoppingManager implements ShoppingManager {
                     data[i][1] = electronics.getProductName();
                     data[i][2] = electronics.getClass().getSimpleName();
                     data[i][3] = electronics.getPrice();
-                    data[i][4] = electronics.getBrand() + ", " + electronics.getWarranty();
+                    data[i][4] = electronics.getBrand() + ", " + electronics.getWarranty() + " weeks warranty";
                 }
             }
 

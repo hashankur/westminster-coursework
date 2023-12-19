@@ -3,9 +3,9 @@ public abstract class Product {
     protected String productName;
     // protected int availableItems;
     public static int availableItems;
-    protected int price;
+    protected double price;
 
-    public Product(String productID, String productName, int price) {
+    public Product(String productID, String productName, double price) {
         this.productID = productID;
         this.productName = productName;
         this.price = price;
@@ -35,7 +35,7 @@ public abstract class Product {
         this.availableItems = availableItems;
     }
 
-    public int getPrice() {
+    public double getPrice() {
         return price;
     }
 
