@@ -4,10 +4,10 @@ import java.util.Scanner;
 public class App {
 
     static ArrayList<Product> products = new ArrayList<Product>();
+    static Scanner input = new Scanner(System.in);
 
     public static void main(String[] args) throws Exception {
         ShoppingManager manager = new WestminsterShoppingManager();
-        Scanner input = new Scanner(System.in);
         int option = 0;
 
         while (true) {
@@ -21,25 +21,16 @@ public class App {
             System.out.println("\t5) Read from file");
             System.out.println("\t6) Open GUI");
             System.out.println("\t0) Exit");
-            System.out.print("Enter your choice: ");
 
-            // if (input.hasNextInt()) {
+            System.out.print("Enter your choice: ");
             option = validate_input_int(input);
-            // System.out.println();
-            // // rest of your code
-            // } else {
-            // System.out.println("Invalid input. Please enter an integer.");
-            // }
 
             System.out.println();
 
             switch (option) {
                 case 0 -> System.exit(0);
                 case 1 -> manager.addProduct(products);
-                case 2 -> {
-                    System.out.print("Enter product ID: ");
-                    // manager.deleteProduct(validate_input_int(input)); // Need string input
-                }
+                case 2 -> products = manager.deleteProduct(products); // Need string input
                 case 3 -> manager.printProductList(products);
                 case 4 -> manager.saveToFile(products);
                 case 5 -> products = manager.readFromFile();
@@ -47,6 +38,7 @@ public class App {
                 default -> System.out.println("Invalid choice!");
             }
         }
+        // input.close();
     }
 
     public static int validate_input_int(Scanner input) {
@@ -56,13 +48,4 @@ public class App {
         }
         return input.nextInt();
     }
-
-    public static String validate_input_string(Scanner input) {
-        while (input.hasNextInt()) {
-            System.out.print("Invalid input. Please enter a product ID: ");
-            input.next(); // Discard the invalid input
-        }
-        return input.next();
-    }
-
 }

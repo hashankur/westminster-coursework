@@ -29,54 +29,61 @@ class WestminsterShoppingManager implements ShoppingManager {
         System.out.println("\t1) Clothing");
         System.out.println("\t2) Electronics");
 
-        Scanner input = new Scanner(System.in);
         System.out.print("Enter your choice: ");
-        int choice = input.nextInt();
+        int choice = App.input.nextInt();
         System.out.println();
 
         System.out.print("Enter product ID: ");
-        String productID = input.next();
+        String productID = App.input.next();
         System.out.print("Enter product name: ");
-        String productName = input.next();
+        String productName = App.input.next();
         System.out.print("Enter price: ");
-        int price = App.validate_input_int(input);
+        int price = App.validate_input_int(App.input);
 
         switch (choice) {
             case 1 -> {
                 System.out.print("Enter size: ");
-                String size = input.next();
+                String size = App.input.next();
                 System.out.print("Enter color: ");
-                String color = input.next();
+                String color = App.input.next();
 
                 products.add(new Clothing(productID, productName, price, size, color));
             }
             case 2 -> {
                 System.out.print("Enter brand: ");
-                String brand = input.next();
+                String brand = App.input.next();
                 System.out.print("Enter warranty: ");
-                int warranty = App.validate_input_int(input);
+                int warranty = App.validate_input_int(App.input);
 
                 products.add(new Electronics(productID, productName, price, brand, warranty));
             }
             default -> System.out.println("Invalid choice!");
         }
-
-        // input.close();
     }
 
-    public void deleteProduct(String productID, ArrayList<Product> products) {
-        System.out.println("Enter product ID: ");
-        Scanner input = new Scanner(System.in);
-        String id = input.next();
+    public ArrayList<Product> deleteProduct(ArrayList<Product> products) {
+        System.out.print("Enter product ID: ");
+        String id = App.input.next();
+        boolean found = false;
 
         for (Product product : products) {
             if (product.getProductID().equals(id)) {
                 products.remove(product);
+                found = true;
                 break;
             }
         }
+        
+        if (!found) {
+            System.out.println("Product not found.");
+        }
 
-        input.close();
+        System.out.print("Do you want to delete another product? (Back to menu: q): ");
+        String choice = App.input.next();
+        if (!choice.equals("q"))
+            deleteProduct(products);
+
+        return products;
     }
 
     public void printProductList(ArrayList<Product> products) {
