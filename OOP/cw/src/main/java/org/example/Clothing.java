@@ -1,3 +1,5 @@
+package org.example;
+
 public class Clothing extends Product {
     private String size;
     private String colour;

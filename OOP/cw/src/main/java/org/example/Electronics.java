@@ -1,3 +1,5 @@
+package org.example;
+
 public class Electronics extends Product {
     private String brand;
     private int warranty;

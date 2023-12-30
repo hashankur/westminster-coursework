@@ -1,3 +1,5 @@
+package org.example;
+
 public abstract class Product {
     protected String productID;
     protected String productName;

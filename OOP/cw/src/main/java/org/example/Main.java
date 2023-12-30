@@ -1,12 +1,14 @@
+package org.example;
+
 import java.util.ArrayList;
 import java.util.Scanner;
 
-public class App {
+public class Main {
 
     static ArrayList<Product> products = new ArrayList<Product>();
     static Scanner input = new Scanner(System.in);
 
-    public static void main(String[] args) throws Exception {
+    public static void main(String[] args) {
         ShoppingManager manager = new WestminsterShoppingManager();
         int option = 0;
 
@@ -30,7 +32,7 @@ public class App {
             switch (option) {
                 case 0 -> System.exit(0);
                 case 1 -> manager.addProduct(products);
-                case 2 -> products = manager.deleteProduct(products); // Need string input
+                case 2 -> products = manager.deleteProduct(products);
                 case 3 -> manager.printProductList(products);
                 case 4 -> manager.saveToFile(products);
                 case 5 -> products = manager.readFromFile();

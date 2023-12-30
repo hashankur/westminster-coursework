@@ -1,24 +1,14 @@
+package org.example;
+
+import javax.swing.*;
+import java.awt.*;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Scanner;
-
-import java.awt.BorderLayout;
-import java.awt.Dimension;
-import java.awt.FlowLayout;
-import java.awt.Toolkit;
-import java.awt.Window;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
-
-import javax.swing.JButton;
-import javax.swing.JFrame;
-import javax.swing.JLabel;
-import javax.swing.JPanel;
-import javax.swing.JScrollPane;
-import javax.swing.JTable;
-import javax.swing.JTextArea;
 
 class WestminsterShoppingManager implements ShoppingManager {
 
@@ -30,30 +20,30 @@ class WestminsterShoppingManager implements ShoppingManager {
         System.out.println("\t2) Electronics");
 
         System.out.print("Enter your choice: ");
-        int choice = App.input.nextInt();
+        int choice = Main.input.nextInt();
         System.out.println();
 
         System.out.print("Enter product ID: ");
-        String productID = App.input.next();
+        String productID = Main.input.next();
         System.out.print("Enter product name: ");
-        String productName = App.input.next();
+        String productName = Main.input.next();
         System.out.print("Enter price: ");
-        int price = App.validate_input_int(App.input);
+        int price = Main.validate_input_int(Main.input);
 
         switch (choice) {
             case 1 -> {
                 System.out.print("Enter size: ");
-                String size = App.input.next();
+                String size = Main.input.next();
                 System.out.print("Enter color: ");
-                String color = App.input.next();
+                String color = Main.input.next();
 
                 products.add(new Clothing(productID, productName, price, size, color));
             }
             case 2 -> {
                 System.out.print("Enter brand: ");
-                String brand = App.input.next();
+                String brand = Main.input.next();
                 System.out.print("Enter warranty: ");
-                int warranty = App.validate_input_int(App.input);
+                int warranty = Main.validate_input_int(Main.input);
 
                 products.add(new Electronics(productID, productName, price, brand, warranty));
             }
@@ -63,7 +53,7 @@ class WestminsterShoppingManager implements ShoppingManager {
 
     public ArrayList<Product> deleteProduct(ArrayList<Product> products) {
         System.out.print("Enter product ID: ");
-        String id = App.input.next();
+        String id = Main.input.next();
         boolean found = false;
 
         for (Product product : products) {
@@ -73,13 +63,13 @@ class WestminsterShoppingManager implements ShoppingManager {
                 break;
             }
         }
-        
+
         if (!found) {
             System.out.println("Product not found.");
         }
 
-        System.out.print("Do you want to delete another product? (Back to menu: q): ");
-        String choice = App.input.next();
+        System.out.print("Delete another product? (Back to menu: q): ");
+        String choice = Main.input.next();
         if (!choice.equals("q"))
             deleteProduct(products);
 
@@ -87,7 +77,7 @@ class WestminsterShoppingManager implements ShoppingManager {
     }
 
     public void printProductList(ArrayList<Product> products) {
-        if (products.size() == 0) {
+        if (products.isEmpty()) {
             System.out.println("No products in list");
         } else {
             // sort products alphabetically
@@ -178,6 +168,11 @@ class WestminsterShoppingManager implements ShoppingManager {
         frame.setSize(800, 500);
         JPanel contentPane = new JPanel(new BorderLayout());
 
+        // Selector
+        JLabel comboLabel = new JLabel("Select Product Category");
+        String[] comboOptions = { "All", "Electronics", "Clothing" };
+        JComboBox comboBox = new JComboBox(comboOptions);
+
         // Button
         JPanel buttonPanel = new JPanel(new FlowLayout(FlowLayout.RIGHT));
         JButton shoppingCartBtn = new JButton("Shopping Cart");
@@ -187,6 +182,8 @@ class WestminsterShoppingManager implements ShoppingManager {
                 spawnCartWindow();
             }
         });
+        buttonPanel.add(comboLabel);
+        buttonPanel.add(comboBox);
         buttonPanel.add(shoppingCartBtn);
 
         // Product category
@@ -196,18 +193,18 @@ class WestminsterShoppingManager implements ShoppingManager {
 
         // Table
         String columnNames[] = { "Product ID", "Name", "Category", "Price(£)", "Info" };
-        if (App.products.size() != 0) {
-            Object[][] data = new Object[App.products.size()][5];
-            for (int i = 0; i < App.products.size(); i++) {
-                if (App.products.get(i) instanceof Clothing) {
-                    Clothing clothing = (Clothing) App.products.get(i);
+        if (!Main.products.isEmpty()) {
+            Object[][] data = new Object[Main.products.size()][5];
+            for (int i = 0; i < Main.products.size(); i++) {
+                if (Main.products.get(i) instanceof Clothing) {
+                    Clothing clothing = (Clothing) Main.products.get(i);
                     data[i][0] = clothing.getProductID();
                     data[i][1] = clothing.getProductName();
                     data[i][2] = clothing.getClass().getSimpleName();
                     data[i][3] = clothing.getPrice();
                     data[i][4] = clothing.getSize() + ", " + clothing.getColour();
-                } else if (App.products.get(i) instanceof Electronics) {
-                    Electronics electronics = (Electronics) App.products.get(i);
+                } else if (Main.products.get(i) instanceof Electronics) {
+                    Electronics electronics = (Electronics) Main.products.get(i);
                     data[i][0] = electronics.getProductID();
                     data[i][1] = electronics.getProductName();
                     data[i][2] = electronics.getClass().getSimpleName();
@@ -228,7 +225,7 @@ class WestminsterShoppingManager implements ShoppingManager {
             // }
             details = String.format(
                     "Selected Product - Details\n%s",
-                    App.products.get(0).toString());
+                    Main.products.get(0).toString());
             textArea.setEditable(false);
             contentPane.add(textArea, BorderLayout.WEST);
         } else {
@@ -257,7 +254,7 @@ class WestminsterShoppingManager implements ShoppingManager {
         JPanel contentPane = new JPanel(new BorderLayout());
 
         // Table
-        String columnNames[] = { "Product", "Quantity", "Price" };
+        String[] columnNames = { "Product", "Quantity", "Price" };
         Object[][] data = { { "1", "2", "3" }, { "6", "7", "8" } };
         JTable table = new JTable(data, columnNames);
         JScrollPane scrollPane = new JScrollPane(table);

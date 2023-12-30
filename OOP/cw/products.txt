@@ -1,4 +1,5 @@
-Electronics;1000;sfg;65;adf;3232
-Electronics;1312;sfsg;65;asd;2002
-Clothing;asdf;asdfasdf;65;sd;saf
-Clothing;asdfa;adfdfdfdf;6565;adf;ad
+Clothing;123;123;123.0;123;123
+Electronics;A1000;TV;299.99;Samsung;12
+Electronics;A203;Dishwasher;500.0;Bosh;36
+Clothing;B001;Shirt;39.99;S;White
+Clothing;B201;Leggings;22.9;M;Black
