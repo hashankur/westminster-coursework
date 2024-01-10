@@ -1,4 +1,4 @@
-package org.example;
+package org.westminsterShopper.data;
 
 public abstract class Product {
     protected String productID;

@@ -1,4 +1,6 @@
-package org.example;
+package org.westminsterShopper.data;
+
+import org.westminsterShopper.data.Product;
 
 import java.util.ArrayList;
 

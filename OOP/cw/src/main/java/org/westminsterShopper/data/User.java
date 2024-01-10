@@ -1,4 +1,4 @@
-package org.example;
+package org.westminsterShopper.data;
 
 public class User {
     private String username;

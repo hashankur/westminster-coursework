@@ -1,19 +1,19 @@
 package org.example;
+import org.westminsterShopper.gui.components.MainWindow;
 
 import java.util.ArrayList;
 import java.util.Scanner;
 
 public class Main {
 
-    static ArrayList<Product> products = new ArrayList<Product>();
-    static Scanner input = new Scanner(System.in);
+    public static ArrayList<Product> products = new ArrayList<Product>();
+    public static Scanner input = new Scanner(System.in);
 
     public static void main(String[] args) {
         ShoppingManager manager = new WestminsterShoppingManager();
         int option = 0;
 
         while (true) {
-
             System.out.println("Welcome to Westminster Shopping Manager");
             System.out.println("Select an option:");
             System.out.println("\t1) Add product");
@@ -43,6 +43,13 @@ public class Main {
         // input.close();
     }
 
+    /**
+     * Validates user input to ensure it is an integer.
+     * If the input is not an integer, prompts the user to enter a number until a valid input is provided.
+     *
+     * @param input the Scanner object used to read user input
+     * @return the validated integer input
+     */
     public static int validate_input_int(Scanner input) {
         while (!input.hasNextInt()) {
             System.out.print("Invalid input. Please enter a number: ");

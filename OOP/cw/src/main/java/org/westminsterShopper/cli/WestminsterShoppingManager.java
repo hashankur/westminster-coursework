@@ -1,7 +1,15 @@
-package org.example;
+package org.westminsterShopper.cli;
 
-import javax.swing.*;
-import java.awt.*;
+import org.westminsterShopper.Main;
+import org.westminsterShopper.data.Clothing;
+import org.westminsterShopper.data.Electronics;
+import org.westminsterShopper.data.Product;
+
+import java.awt.BorderLayout;
+import java.awt.Dimension;
+import java.awt.FlowLayout;
+import java.awt.Toolkit;
+import java.awt.Window;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.File;
@@ -10,9 +18,24 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Scanner;
 
-class WestminsterShoppingManager implements ShoppingManager {
+import javax.swing.JButton;
+import javax.swing.JComboBox;
+import javax.swing.JFrame;
+import javax.swing.JLabel;
+import javax.swing.JPanel;
+import javax.swing.JScrollPane;
+import javax.swing.JTable;
+import javax.swing.JTextArea;
+import javax.swing.RowFilter;
+import javax.swing.table.DefaultTableModel;
+import javax.swing.table.TableModel;
+import javax.swing.table.TableRowSorter;
+
+public class WestminsterShoppingManager implements ShoppingManager {
 
     static final String FILE_PATH = "products.txt";
+    static final String FILE_PATH_PRODUCTS = "products.txt";
+    static final String FILE_PATH_USERS = "users.txt";
 
     public void addProduct(ArrayList<Product> products) {
         System.out.println("Select product type:");
@@ -78,9 +101,10 @@ class WestminsterShoppingManager implements ShoppingManager {
 
     public void printProductList(ArrayList<Product> products) {
         if (products.isEmpty()) {
-            System.out.println("No products in list");
+            System.out.println("No products available.");
         } else {
             // sort products alphabetically
+            // Collections.sort???
             products.sort((product1, product2) -> product1.getProductID().compareTo(product2.getProductID()));
             for (Product product : products) {
                 System.out.println("-".repeat(50));
@@ -88,13 +112,14 @@ class WestminsterShoppingManager implements ShoppingManager {
             }
             System.out.println("-".repeat(50));
         }
+        System.out.println();
     }
 
     public void saveToFile(ArrayList<Product> products) {
         boolean fileCreated;
         File file;
         try {
-            file = new File(FILE_PATH);
+            file = new File(FILE_PATH_PRODUCTS);
             fileCreated = file.createNewFile();
 
             if (fileCreated) {
@@ -105,10 +130,9 @@ class WestminsterShoppingManager implements ShoppingManager {
                 System.out.println("File saved.");
             }
 
-            FileWriter writeFile = new FileWriter(FILE_PATH);
+            FileWriter writeFile = new FileWriter(FILE_PATH_PRODUCTS);
             for (Product product : products) {
-                if (product instanceof Clothing) {
-                    Clothing clothing = (Clothing) product;
+                if (product instanceof Clothing clothing) {
                     writeFile.write(String.format(
                             "%s;%s;%s;%s;%s;%s\n",
                             clothing.getClass().getSimpleName(),
@@ -117,8 +141,7 @@ class WestminsterShoppingManager implements ShoppingManager {
                             clothing.getPrice(),
                             clothing.getSize(),
                             clothing.getColour()));
-                } else if (product instanceof Electronics) {
-                    Electronics electronics = (Electronics) product;
+                } else if (product instanceof Electronics electronics) {
                     writeFile.write(String.format(
                             "%s;%s;%s;%s;%s;%s\n",
                             electronics.getClass().getSimpleName(),
@@ -141,7 +164,7 @@ class WestminsterShoppingManager implements ShoppingManager {
         ArrayList<Product> fileContent = new ArrayList<>();
 
         try {
-            Scanner input = new Scanner(new File(FILE_PATH));
+            Scanner input = new Scanner(new File(FILE_PATH_PRODUCTS));
 
             while (input.hasNextLine()) {
                 String[] line = input.nextLine().split(";");
@@ -266,6 +289,11 @@ class WestminsterShoppingManager implements ShoppingManager {
         centreWindow(frame);
     }
 
+    /**
+     * Centers the specified window on the screen.
+     *
+     * @param frame the window to be centered
+     */
     public static void centreWindow(Window frame) {
         Dimension dimension = Toolkit.getDefaultToolkit().getScreenSize();
         int x = (int) ((dimension.getWidth() - frame.getWidth()) / 2);

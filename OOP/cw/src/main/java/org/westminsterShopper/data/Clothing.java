@@ -1,11 +1,11 @@
-package org.example;
+package org.westminsterShopper.data;
 
 public class Clothing extends Product {
     private String size;
     private String colour;
 
-    public Clothing(String productID, String productName, double d, String size, String colour) {
-        super(productID, productName, d);
+    public Clothing(String productID, String productName, double price, String size, String colour) {
+        super(productID, productName, price);
         this.size = size;
         this.colour = colour;
     }
