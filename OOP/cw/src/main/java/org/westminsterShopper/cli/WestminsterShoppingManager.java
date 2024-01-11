@@ -1,15 +1,17 @@
 package org.westminsterShopper.cli;
 
-import org.westminsterShopper.Main;
-import org.westminsterShopper.data.Clothing;
-import org.westminsterShopper.data.Electronics;
-import org.westminsterShopper.data.Product;
-
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.Scanner;
+
+import org.westminsterShopper.Main;
+import org.westminsterShopper.data.Clothing;
+import org.westminsterShopper.data.Electronics;
+import org.westminsterShopper.data.Product;
 
 public class WestminsterShoppingManager implements ShoppingManager {
 
@@ -88,7 +90,9 @@ public class WestminsterShoppingManager implements ShoppingManager {
         } else {
             // sort products alphabetically
             // Collections.sort???
-            products.sort((product1, product2) -> product1.getProductID().compareTo(product2.getProductID()));
+            // products.sort((product1, product2) -> product1.getProductID().compareTo(product2.getProductID()));
+            Collections.sort(products, Comparator.comparing(Product::getProductID));
+
             for (Product product : products) {
                 System.out.println("-".repeat(50));
                 System.out.println(product);

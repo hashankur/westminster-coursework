@@ -1,10 +1,9 @@
 package org.westminsterShopper;
 
 import org.westminsterShopper.data.Product;
+import org.westminsterShopper.gui.frames.MainWindow;
 import org.westminsterShopper.cli.ShoppingManager;
 import org.westminsterShopper.cli.WestminsterShoppingManager;
-import org.westminsterShopper.gui.components.CartWindow;
-import org.westminsterShopper.gui.components.MainWindow;
 
 import java.util.ArrayList;
 import java.util.Scanner;
@@ -42,7 +41,6 @@ public class Main {
                 case 4 -> manager.saveToFile(products);
                 case 5 -> products = manager.readFromFile();
                 case 6 -> new MainWindow();
-                case 7 -> new CartWindow();
                 default -> System.out.println("Invalid choice!");
             }
         }
