@@ -14,6 +14,4 @@ public interface ShoppingManager {
     public void saveToFile(ArrayList<Product> products);
 
     public ArrayList<Product> readFromFile();
-
-    public void spawnMainWindow();
 }

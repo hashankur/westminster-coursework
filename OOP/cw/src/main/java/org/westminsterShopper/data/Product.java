@@ -1,11 +1,11 @@
 package org.westminsterShopper.data;
 
 public abstract class Product {
-    protected String productID;
-    protected String productName;
+    private String productID;
+    private String productName;
     // protected int availableItems;
-    public static int availableItems;
-    protected double price;
+    private static int availableItems;
+    private double price;
 
     public Product(String productID, String productName, double price) {
         this.productID = productID;

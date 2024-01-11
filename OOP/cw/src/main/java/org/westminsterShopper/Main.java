@@ -1,4 +1,9 @@
-package org.example;
+package org.westminsterShopper;
+
+import org.westminsterShopper.data.Product;
+import org.westminsterShopper.cli.ShoppingManager;
+import org.westminsterShopper.cli.WestminsterShoppingManager;
+import org.westminsterShopper.gui.components.CartWindow;
 import org.westminsterShopper.gui.components.MainWindow;
 
 import java.util.ArrayList;
@@ -36,7 +41,8 @@ public class Main {
                 case 3 -> manager.printProductList(products);
                 case 4 -> manager.saveToFile(products);
                 case 5 -> products = manager.readFromFile();
-                case 6 -> manager.spawnMainWindow();
+                case 6 -> new MainWindow();
+                case 7 -> new CartWindow();
                 default -> System.out.println("Invalid choice!");
             }
         }
