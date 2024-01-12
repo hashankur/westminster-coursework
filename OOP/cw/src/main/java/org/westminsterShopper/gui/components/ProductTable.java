@@ -1,6 +1,13 @@
 package org.westminsterShopper.gui.components;
 
-import javax.swing.*;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+
+import javax.swing.JComboBox;
+import javax.swing.JTable;
+import javax.swing.JTextArea;
+import javax.swing.ListSelectionModel;
+import javax.swing.RowFilter;
 import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
 import javax.swing.table.DefaultTableModel;
@@ -24,17 +31,15 @@ public class ProductTable extends JTable {
             @Override
             public void valueChanged(ListSelectionEvent e) {
                 if (!e.getValueIsAdjusting()) {
-                    System.out.println(getValueAt(getSelectedRow(), 0));
                     if (getSelectedRow() != -1) {
-                        textArea.setText("Selected Product - Details\n" + getSelectedProductID((String) getValueAt(getSelectedRow(), 0)).toString());
+                        textArea.setText("Selected Product - Details\n"
+                                + getSelectedProduct((String) getValueAt(getSelectedRow(), 0)).toString());
                     } else {
-                        textArea.setText(""); // ???
+                        textArea.setText(""); // Clear selected product details on product type change
                     }
                 }
             }
         });
-
-        System.out.println(this.getSelectedRow());
 
         comboBox.addActionListener(new ActionListener() {
             @Override
@@ -53,8 +58,8 @@ public class ProductTable extends JTable {
         super(data, columns);
     }
 
-    public Product getSelectedProductID(String productID) {
+    public Product getSelectedProduct(String productID) {
         return Main.products.stream().filter(product -> product.getProductID().equals(productID)).findFirst()
-                .orElse(null);
+                .orElse(null); // ???
     }
 }
