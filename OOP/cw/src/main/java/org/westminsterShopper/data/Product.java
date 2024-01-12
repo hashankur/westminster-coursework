@@ -3,12 +3,13 @@ package org.westminsterShopper.data;
 public abstract class Product {
     private String productID;
     private String productName;
-    private static int availableItems;
+    private int availableItems;
     private double price;
 
-    public Product(String productID, String productName, double price) {
+    public Product(String productID, String productName, int availableItems, double price) {
         this.productID = productID;
         this.productName = productName;
+        this.availableItems = availableItems;
         this.price = price;
     }
 
@@ -37,7 +38,7 @@ public abstract class Product {
     }
 
     public void setAvailableItems(int availableItems) {
-        Product.availableItems = availableItems;
+        this.availableItems = availableItems;
     }
 
     public void setPrice(int price) {
@@ -47,7 +48,8 @@ public abstract class Product {
     @Override
     public String toString() {
         return "Product ID: " + this.productID + "\n" +
-                "Product name: " + this.productName + "\n" +
+                "Category: " + this.getClass().getSimpleName() + "\n" +
+                "Name: " + this.productName + "\n" +
                 "Price: " + this.price;
     }
 }

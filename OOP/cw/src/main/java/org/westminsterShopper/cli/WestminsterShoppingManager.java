@@ -19,42 +19,48 @@ public class WestminsterShoppingManager implements ShoppingManager {
     static Scanner input = new Scanner(System.in);
 
     public void addProduct(ArrayList<Product> products) {
-        System.out.println("Select product type:\n\t1) Clothing\n\t2) Electronics");
-
-        System.out.print("Enter your choice: ");
-        int productType = Util.validate_input_int(input);
-        System.out.println();
-
-        if (productType == 1 || productType == 2) {
-            System.out.print("Enter product ID: ");
-            String productID = input.next();
-            System.out.print("Enter product name: ");
-            String productName = input.next();
-            System.out.print("Enter price: ");
-            int price = Util.validate_input_int(input);
-
-            if (productType == 1) {
-                System.out.print("Enter size: ");
-                String size = input.next();
-                System.out.print("Enter color: ");
-                String color = input.next();
-                products.add(new Clothing(productID, productName, price, size, color));
-            } else {
-                System.out.print("Enter brand: ");
-                String brand = input.next();
-                System.out.print("Enter warranty: ");
-                int warranty = Util.validate_input_int(input);
-                products.add(new Electronics(productID, productName, price, brand, warranty));
-            }
-            Util.coloriseTerminalText("\nProduct added.", false);
+        if (products.size() >= 50) {
+            Util.coloriseTerminalText("Maximum number of products reached.", true);
         } else {
-            Util.coloriseTerminalText("Invalid choice!", true);
-        }
+            System.out.println("Select product type:\n\t1) Clothing\n\t2) Electronics");
 
-        System.out.print("Add product? (Back to menu: q): ");
-        String choice = input.next();
-        if (!choice.equals("q"))
-            addProduct(products);
+            System.out.print("Enter your choice: ");
+            int productType = Util.validate_input_int(input);
+            System.out.println();
+
+            if (productType == 1 || productType == 2) {
+                System.out.print("Enter product ID: ");
+                String productID = input.next();
+                System.out.print("Enter product name: ");
+                String productName = input.next();
+                System.out.print("Enter available items: ");
+                int availableItems = Util.validate_input_int(input);
+                System.out.print("Enter price: ");
+                int price = Util.validate_input_int(input);
+
+                if (productType == 1) {
+                    System.out.print("Enter size: ");
+                    String size = input.next();
+                    System.out.print("Enter color: ");
+                    String color = input.next();
+                    products.add(new Clothing(productID, productName, availableItems, price, size, color));
+                } else {
+                    System.out.print("Enter brand: ");
+                    String brand = input.next();
+                    System.out.print("Enter warranty: ");
+                    int warranty = Util.validate_input_int(input);
+                    products.add(new Electronics(productID, productName, availableItems, price, brand, warranty));
+                }
+                Util.coloriseTerminalText("\nProduct added.", false);
+            } else {
+                Util.coloriseTerminalText("Invalid choice!", true);
+            }
+
+            System.out.print("Add product? (Back to menu: q): ");
+            String choice = input.next();
+            if (!choice.equals("q"))
+                addProduct(products);
+        }
     }
 
     public ArrayList<Product> deleteProduct(ArrayList<Product> products) {
@@ -154,16 +160,18 @@ public class WestminsterShoppingManager implements ShoppingManager {
                     fileContent.add(new Clothing(
                             line[1],
                             line[2],
-                            Double.parseDouble(line[3]),
-                            line[4],
-                            line[5]));
+                            Integer.parseInt(line[3]),
+                            Double.parseDouble(line[4]),
+                            line[5],
+                            line[6]));
                 } else if (line[0].equals("Electronics")) {
                     fileContent.add(new Electronics(
                             line[1],
                             line[2],
-                            Double.parseDouble(line[3]),
-                            line[4],
-                            Integer.parseInt(line[5])));
+                            Integer.parseInt(line[3]),
+                            Double.parseDouble(line[4]),
+                            line[5],
+                            Integer.parseInt(line[6])));
                 }
             }
         } catch (IOException e) {
