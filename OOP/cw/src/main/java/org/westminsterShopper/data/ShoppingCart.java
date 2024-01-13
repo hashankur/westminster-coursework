@@ -1,25 +1,43 @@
 package org.westminsterShopper.data;
 
-import org.westminsterShopper.data.Product;
-
 import java.util.ArrayList;
+import java.util.HashMap;
 
 public class ShoppingCart {
-    private ArrayList<Product> products = new ArrayList<Product>();
+    private static ArrayList<Product> cartProducts = new ArrayList<Product>();
+    private static HashMap<String, Integer> cartProductsQuantity = new HashMap<>();
 
-    public void addProduct(Product product) {
-        this.products.add(product);
+    public static void addProduct(Product product, int quantity) {
+        if (ShoppingCart.cartProducts.contains(product)) {
+            int currentQuantity = cartProductsQuantity.get(product.getProductID());
+            cartProductsQuantity.put(product.getProductID(), currentQuantity + quantity);
+        } else {
+            ShoppingCart.cartProducts.add(product);
+            cartProductsQuantity.put(product.getProductID(), quantity);
+        }
     }
 
-    public void removeProduct(Product product) {
-        this.products.remove(product);
+    public static void removeProduct(Product product) {
+        ShoppingCart.cartProducts.remove(product);
     }
 
-    public int getTotalCost() {
+    public static int getTotalCost() {
         int totalCost = 0;
-        for (Product product : this.products) {
+        for (Product product : ShoppingCart.cartProducts) {
             totalCost += product.getPrice();
         }
         return totalCost;
+    }
+
+    public static int cartSize() {
+        return ShoppingCart.cartProducts.size();
+    }
+
+    public static Product getProductAtIndex(int index) {
+        return ShoppingCart.cartProducts.get(index);
+    }
+
+    public static int getProductQuantityInCart(Product product) {
+        return cartProductsQuantity.get(product.getProductID());
     }
 }

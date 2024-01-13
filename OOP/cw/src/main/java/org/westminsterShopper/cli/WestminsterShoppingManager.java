@@ -15,6 +15,7 @@ import org.westminsterShopper.data.Product;
 
 public class WestminsterShoppingManager implements ShoppingManager {
 
+    public static ArrayList<Product> products = new ArrayList<Product>();
     static final String FILE_PATH_PRODUCTS = "products.txt";
     static Scanner input = new Scanner(System.in);
 
@@ -22,15 +23,28 @@ public class WestminsterShoppingManager implements ShoppingManager {
         if (products.size() >= 50) {
             Util.coloriseTerminalText("Maximum number of products reached.", true);
         } else {
-            System.out.println("Select product type:\n\t1) Clothing\n\t2) Electronics");
+            System.out.print("Enter product ID: ");
+            String productID = input.next();
+            for (Product product : products) {
+                if (product.getProductID().equals(productID)) {
+                    Util.coloriseTerminalText("\nProduct ID already exists.", true);
+                    System.out.println("Update product quantity? (Back to menu: q): ");
+                    if (!input.next().equals("q")) {
+                        System.out.print("Enter new quantity: ");
+                        int quantity = Util.validate_input_int(input);
+                        product.setAvailableItems(quantity);
+                        Util.coloriseTerminalText("\nProduct quantity updated.", false);
+                    }
+                    return;
+                }
+            }
 
+            System.out.println("Select product type:\n\t1) Clothing\n\t2) Electronics");
             System.out.print("Enter your choice: ");
             int productType = Util.validate_input_int(input);
             System.out.println();
 
             if (productType == 1 || productType == 2) {
-                System.out.print("Enter product ID: ");
-                String productID = input.next();
                 System.out.print("Enter product name: ");
                 String productName = input.next();
                 System.out.print("Enter available items: ");
@@ -71,13 +85,19 @@ public class WestminsterShoppingManager implements ShoppingManager {
         for (Product product : products) {
             if (product.getProductID().equals(id)) {
                 products.remove(product);
+                Util.coloriseTerminalText("\nProduct deleted.", false);
+                System.out.println("-".repeat(50));
+                System.out.println(product);
+                System.out.println("-".repeat(50));
+                System.out.println(products.size() + " product(s) in the system.\n");
+
                 found = true;
                 break;
             }
         }
 
         if (!found) {
-            Util.coloriseTerminalText("Product not found.", true);
+            Util.coloriseTerminalText("\nProduct not found.", true);
         }
 
         System.out.print("Delete another product? (Back to menu: q): ");
@@ -93,14 +113,12 @@ public class WestminsterShoppingManager implements ShoppingManager {
             Util.coloriseTerminalText("No products available.", true);
         } else {
             // sort products alphabetically
-            // Collections.sort???
-            // products.sort((product1, product2) ->
-            // product1.getProductID().compareTo(product2.getProductID()));
             Collections.sort(products, Comparator.comparing(Product::getProductID));
 
             for (Product product : products) {
                 System.out.println("-".repeat(50));
                 System.out.println(product);
+                System.out.println("Quantity: " + product.getAvailableItems());
             }
             System.out.println("-".repeat(50));
         }

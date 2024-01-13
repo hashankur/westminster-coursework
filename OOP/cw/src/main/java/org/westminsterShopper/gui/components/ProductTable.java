@@ -14,7 +14,7 @@ import javax.swing.table.DefaultTableModel;
 import javax.swing.table.TableModel;
 import javax.swing.table.TableRowSorter;
 
-import org.westminsterShopper.Main;
+import org.westminsterShopper.cli.WestminsterShoppingManager;
 import org.westminsterShopper.data.Product;
 
 public class ProductTable extends JTable {
@@ -24,12 +24,9 @@ public class ProductTable extends JTable {
         TableRowSorter<TableModel> sorter = new TableRowSorter<>(model);
         this.setRowSorter(sorter);
         this.setFillsViewportHeight(true);
-        // Highlighter highlighter = model.getHighlighter();
-        // highlighter.addHighlight(row, 0, row, model.getColumnCount() - 1, new
-        // DefaultHighlighter.DefaultHighlightPainter(Color.RED));
 
         ListSelectionModel selectionModel = this.getSelectionModel();
-        selectionModel.addListSelectionListener(new ListSelectionListener() { // Listner for product selection
+        selectionModel.addListSelectionListener(new ListSelectionListener() { // Listener for product selection
             @Override
             public void valueChanged(ListSelectionEvent e) {
                 if (!e.getValueIsAdjusting()) {
@@ -47,7 +44,7 @@ public class ProductTable extends JTable {
             }
         });
 
-        comboBox.addActionListener(new ActionListener() { // Listner for product type change
+        comboBox.addActionListener(new ActionListener() { // Listener for product type change
             @Override
             public void actionPerformed(ActionEvent e) {
                 String selectedCategory = (String) comboBox.getSelectedItem();
@@ -60,12 +57,21 @@ public class ProductTable extends JTable {
         });
     }
 
+    @Override
+    public boolean isCellEditable(int row, int column) {
+        return false;
+    }
+
     public ProductTable(String[][] data, String[] columns) {
         super(data, columns);
     }
 
     public Product getSelectedProduct(String productID) {
-        return Main.products.stream().filter(product -> product.getProductID().equals(productID)).findFirst()
-                .orElse(null); // ???
+        for (Product product : WestminsterShoppingManager.products) {
+            if (product.getProductID().equals(productID)) {
+                return product;
+            }
+        }
+        return null;
     }
 }
