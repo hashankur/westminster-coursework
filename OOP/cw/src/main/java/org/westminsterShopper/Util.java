@@ -14,7 +14,7 @@ public class Util {
      * @param input the Scanner object used to read user input
      * @return the validated integer input
      */
-    public static int validate_input_int(Scanner input) {
+    public static int validateInputInt(Scanner input) {
         while (!input.hasNextInt()) {
             coloriseTerminalText("Invalid input.", true);
             System.out.print("Please enter a number: ");
@@ -30,10 +30,8 @@ public class Util {
      */
     public static void centreWindow(Window frame) {
         Dimension dimension = Toolkit.getDefaultToolkit().getScreenSize();
-        // int x = (int) ((dimension.getWidth() - frame.getWidth()) / 2);
-        // int y = (int) ((dimension.getHeight() - frame.getHeight()) / 2);
-        int x = 1105;
-        int y = 55;
+        int x = (int) ((dimension.getWidth() - frame.getWidth()) / 2);
+        int y = (int) ((dimension.getHeight() - frame.getHeight()) / 2);
         frame.setLocation(x, y);
     }
 

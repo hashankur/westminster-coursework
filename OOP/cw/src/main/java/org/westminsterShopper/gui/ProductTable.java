@@ -1,4 +1,4 @@
-package org.westminsterShopper.gui.components;
+package org.westminsterShopper.gui;
 
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -18,6 +18,10 @@ import org.westminsterShopper.cli.WestminsterShoppingManager;
 import org.westminsterShopper.data.Product;
 
 public class ProductTable extends JTable {
+    public ProductTable(String[][] data, String[] columns) {
+        super(data, columns);
+    }
+
     public ProductTable(String[][] data, String[] columns, JComboBox<String> comboBox, JTextArea textArea) {
         super(new DefaultTableModel(data, columns));
         TableModel model = this.getModel();
@@ -60,10 +64,6 @@ public class ProductTable extends JTable {
     @Override
     public boolean isCellEditable(int row, int column) {
         return false;
-    }
-
-    public ProductTable(String[][] data, String[] columns) {
-        super(data, columns);
     }
 
     public Product getSelectedProduct(String productID) {

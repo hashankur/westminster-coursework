@@ -1,4 +1,4 @@
-package org.westminsterShopper.gui.frames;
+package org.westminsterShopper.gui;
 
 import java.awt.BorderLayout;
 import java.awt.FlowLayout;
@@ -23,7 +23,6 @@ import org.westminsterShopper.data.Clothing;
 import org.westminsterShopper.data.Electronics;
 import org.westminsterShopper.data.Product;
 import org.westminsterShopper.data.ShoppingCart;
-import org.westminsterShopper.gui.components.ProductTable;
 
 public class MainWindow extends JFrame {
     public MainWindow() {

@@ -31,7 +31,7 @@ public class WestminsterShoppingManager implements ShoppingManager {
                     System.out.println("Update product quantity? (Back to menu: q): ");
                     if (!input.next().equals("q")) {
                         System.out.print("Enter new quantity: ");
-                        int quantity = Util.validate_input_int(input);
+                        int quantity = Util.validateInputInt(input);
                         product.setAvailableItems(quantity);
                         Util.coloriseTerminalText("\nProduct quantity updated.", false);
                     }
@@ -41,16 +41,16 @@ public class WestminsterShoppingManager implements ShoppingManager {
 
             System.out.println("Select product type:\n\t1) Clothing\n\t2) Electronics");
             System.out.print("Enter your choice: ");
-            int productType = Util.validate_input_int(input);
+            int productType = Util.validateInputInt(input);
             System.out.println();
 
             if (productType == 1 || productType == 2) {
                 System.out.print("Enter product name: ");
                 String productName = input.next();
                 System.out.print("Enter available items: ");
-                int availableItems = Util.validate_input_int(input);
+                int availableItems = Util.validateInputInt(input);
                 System.out.print("Enter price: ");
-                int price = Util.validate_input_int(input);
+                int price = Util.validateInputInt(input);
 
                 if (productType == 1) {
                     System.out.print("Enter size: ");
@@ -62,7 +62,7 @@ public class WestminsterShoppingManager implements ShoppingManager {
                     System.out.print("Enter brand: ");
                     String brand = input.next();
                     System.out.print("Enter warranty: ");
-                    int warranty = Util.validate_input_int(input);
+                    int warranty = Util.validateInputInt(input);
                     products.add(new Electronics(productID, productName, availableItems, price, brand, warranty));
                 }
                 Util.coloriseTerminalText("\nProduct added.", false);

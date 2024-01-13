@@ -1,7 +1,6 @@
-package org.westminsterShopper.gui.frames;
+package org.westminsterShopper.gui;
 
 import java.awt.BorderLayout;
-import java.awt.Insets;
 
 import javax.swing.JFrame;
 import javax.swing.JPanel;
@@ -12,7 +11,6 @@ import org.westminsterShopper.Util;
 import org.westminsterShopper.data.Clothing;
 import org.westminsterShopper.data.Product;
 import org.westminsterShopper.data.ShoppingCart;
-import org.westminsterShopper.gui.components.ProductTable;
 
 public class CartWindow extends JFrame {
     public CartWindow() {
