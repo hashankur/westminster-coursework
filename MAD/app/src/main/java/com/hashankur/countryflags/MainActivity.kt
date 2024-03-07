@@ -4,12 +4,8 @@ import android.annotation.SuppressLint
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
-import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.width
-import androidx.compose.material3.Button
 import androidx.compose.material3.CenterAlignedTopAppBar
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.MaterialTheme
@@ -17,25 +13,24 @@ import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBarDefaults
-import androidx.compose.runtime.Composable
-import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.unit.dp
+import androidx.navigation.compose.NavHost
+import androidx.navigation.compose.composable
+import androidx.navigation.compose.rememberNavController
+import com.hashankur.countryflags.ui.AdvancedLevelScreen
+import com.hashankur.countryflags.ui.GuessCountryScreen
+import com.hashankur.countryflags.ui.GuessFlagScreen
+import com.hashankur.countryflags.ui.GuessHintsScreen
+import com.hashankur.countryflags.ui.MenuScreen
 import com.hashankur.countryflags.ui.theme.CountryFlagsTheme
 
 class MainActivity : ComponentActivity() {
-    enum class Routes() {
-        GUESS_COUNTRY,
-        GUESS_HINTS,
-        GUESS_FLAG,
-        ADVANCED_LEVEL
-    }
-
     @OptIn(ExperimentalMaterial3Api::class)
     @SuppressLint("UnusedMaterial3ScaffoldPaddingParameter")
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContent {
+            val navController = rememberNavController()
             CountryFlagsTheme {
                 Scaffold(
                     topBar = {
@@ -57,7 +52,29 @@ class MainActivity : ComponentActivity() {
                             .padding(innerPadding),
                         color = MaterialTheme.colorScheme.background
                     ) {
-                        Menu()
+                        // https://developer.android.com/guide/navigation/use-graph/navigate
+                        NavHost(navController, startDestination = "home") {
+                            composable(route = "home") {
+                                MenuScreen(
+                                    onNavigateToGuessCountry = { navController.navigate("guess_country") },
+                                    onNavigateToGuessHints = { navController.navigate("guess_hints") },
+                                    onNavigateToGuessFlag = { navController.navigate("guess_flag") },
+                                    onNavigateToAdvancedLevel = { navController.navigate("advanced_level") }
+                                )
+                            }
+                            composable(route = "guess_country") {
+                                GuessCountryScreen()
+                            }
+                            composable(route = "guess_hints") {
+                                GuessHintsScreen()
+                            }
+                            composable(route = "guess_flag") {
+                                GuessFlagScreen()
+                            }
+                            composable(route = "advanced_level") {
+                                AdvancedLevelScreen()
+                            }
+                        }
                     }
                 }
             }
@@ -65,29 +82,6 @@ class MainActivity : ComponentActivity() {
     }
 }
 
-@Composable
-fun MenuButton(name: String, onClick: () -> Unit) {
-    Button(
-        onClick = {},
-        Modifier.width(250.dp)
-    )
-    {
-        Text(name)
-    }
-}
-
-@Composable
-fun Menu() {
-    Column(
-        horizontalAlignment = Alignment.CenterHorizontally,
-        verticalArrangement = Arrangement.Center
-    ) {
-        MenuButton("Guess the Country", onClick = { /*TODO*/ })
-        MenuButton("Guess Hints", onClick = { /*TODO*/ })
-        MenuButton("Guess the Flag", onClick = { /*TODO*/ })
-        MenuButton("Advanced Level", onClick = { /*TODO*/ })
-    }
-}
 
 //fun readJSON() {
 //    val text = this.getResources().openRawResource(R.raw.countries)
@@ -95,4 +89,3 @@ fun Menu() {
 //    var num = 0
 //    num++
 //}
-//val navController = rememberNavController()
