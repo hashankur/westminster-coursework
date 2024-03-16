@@ -44,7 +44,7 @@ class MainActivity : ComponentActivity() {
                             },
                         )
                     },
-                ) { innerPadding ->
+                ) { innerPadding -> // Padding for top bar
                     // A surface container using the 'background' color from the theme
                     Surface(
                         modifier = Modifier
@@ -81,11 +81,3 @@ class MainActivity : ComponentActivity() {
         }
     }
 }
-
-
-//fun readJSON() {
-//    val text = this.getResources().openRawResource(R.raw.countries)
-//        .bufferedReader().use { it.readText() }
-//    var num = 0
-//    num++
-//}
