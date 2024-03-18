@@ -18,7 +18,9 @@ import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBarDefaults
+import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
+import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.currentBackStackEntryAsState
@@ -43,7 +45,23 @@ class MainActivity : ComponentActivity() {
                 Scaffold(
                     topBar = {
                         when (currentRoute) {
-                            "home" -> {
+                            "guess_country" -> {
+                                TopBarBuilder(title = "Guess Country", navController)
+                            }
+
+                            "guess_hints" -> {
+                                TopBarBuilder(title = "Guess Hints", navController)
+                            }
+
+                            "guess_flag" -> {
+                                TopBarBuilder(title = "Guess Flag", navController)
+                            }
+
+                            "advanced_level" -> {
+                                TopBarBuilder(title = "Advanced Level", navController)
+                            }
+
+                            else -> {
                                 CenterAlignedTopAppBar(
                                     colors = TopAppBarDefaults.centerAlignedTopAppBarColors(
                                         containerColor = MaterialTheme.colorScheme.primary,
@@ -52,27 +70,6 @@ class MainActivity : ComponentActivity() {
                                     title = {
                                         Text(getString(R.string.app_name))
                                     },
-                                )
-                            }
-
-                            "guess_country" -> {
-                                MediumTopAppBar(
-                                    colors = TopAppBarDefaults.centerAlignedTopAppBarColors(
-                                        containerColor = MaterialTheme.colorScheme.primary,
-                                        titleContentColor = MaterialTheme.colorScheme.onPrimary
-                                    ),
-                                    title = {
-                                        Text("Guess the Country")
-                                    },
-                                    navigationIcon = {
-                                        IconButton(onClick = { navController.navigateUp() }) {
-                                            Icon(
-                                                imageVector = Icons.AutoMirrored.Filled.ArrowBack,
-                                                contentDescription = "Localized description",
-                                                tint = MaterialTheme.colorScheme.onPrimary
-                                            )
-                                        }
-                                    }
                                 )
                             }
                         }
@@ -112,5 +109,28 @@ class MainActivity : ComponentActivity() {
                 }
             }
         }
+    }
+
+    @OptIn(ExperimentalMaterial3Api::class)
+    @Composable
+    fun TopBarBuilder(title: String, navController: NavHostController) {
+        MediumTopAppBar(
+            colors = TopAppBarDefaults.centerAlignedTopAppBarColors(
+                containerColor = MaterialTheme.colorScheme.primary,
+                titleContentColor = MaterialTheme.colorScheme.onPrimary
+            ),
+            title = {
+                Text(title)
+            },
+            navigationIcon = {
+                IconButton(onClick = { navController.navigateUp() }) {
+                    Icon(
+                        imageVector = Icons.AutoMirrored.Filled.ArrowBack,
+                        contentDescription = "Back button",
+                        tint = MaterialTheme.colorScheme.onPrimary
+                    )
+                }
+            }
+        )
     }
 }
