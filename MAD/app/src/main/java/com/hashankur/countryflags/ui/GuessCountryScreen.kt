@@ -5,24 +5,31 @@ import androidx.compose.foundation.Image
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.aspectRatio
+import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowForward
 import androidx.compose.material.icons.filled.Check
 import androidx.compose.material.icons.filled.Info
+import androidx.compose.material3.Button
+import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Card
-import androidx.compose.material3.ExtendedFloatingActionButton
+import androidx.compose.material3.FilledTonalButton
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
 import androidx.compose.material3.ListItem
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Alignment
@@ -53,22 +60,8 @@ fun GuessCountryScreen() {
         Modifier
             .fillMaxWidth()
             .padding(10.dp)
+            .fillMaxHeight()
     ) {
-        if (nextRound.value) {
-            ExtendedFloatingActionButton(
-                onClick = {
-                    random.value = countryKeys.random(); nextRound.value = !nextRound.value
-                },
-                icon = { Icon(Icons.AutoMirrored.Filled.ArrowForward, "Next Button") },
-                text = { Text(text = "Next") },
-            )
-        } else {
-            ExtendedFloatingActionButton(
-                onClick = { openAlertDialog.value = true },
-                icon = { Icon(Icons.Filled.Check, "Submit Button") },
-                text = { Text(text = "Submit") },
-            )
-        }
         when {
             openAlertDialog.value -> {
                 CheckAnswerDialog(
@@ -81,7 +74,7 @@ fun GuessCountryScreen() {
         }
         Text(countries[random.value].toString())
         DisplayFlagByCountryCode(countryCode = random.value)
-        LazyColumn {
+        LazyColumn(Modifier.weight(1f)) {
             items(countries.length()) {
                 val country = countryValues.elementAt(it)
                 ListItem(
@@ -90,6 +83,9 @@ fun GuessCountryScreen() {
                 )
                 HorizontalDivider()
             }
+        }
+        Row(horizontalArrangement = Arrangement.End, modifier = Modifier.fillMaxWidth()) {
+            ActionButton(nextRound, random, countryKeys, openAlertDialog)
         }
     }
 }
@@ -162,4 +158,31 @@ fun readJSON(): JSONObject {
     val buffer = ByteArray(size)
     inputStream.read(buffer)
     return JSONObject(String(buffer))
+}
+
+@Composable
+fun ActionButton(
+    nextRound: MutableState<Boolean>,
+    random: MutableState<String>,
+    countryKeys: List<String>,
+    openAlertDialog: MutableState<Boolean>
+) {
+    if (nextRound.value) {
+        FilledTonalButton(
+            onClick = {
+                random.value = countryKeys.random(); nextRound.value = !nextRound.value
+            }) {
+            Text(text = "Next")
+            Spacer(Modifier.size(ButtonDefaults.IconSize))
+            Icon(Icons.AutoMirrored.Filled.ArrowForward, "Next Button")
+        }
+
+    } else {
+        Button(
+            onClick = { openAlertDialog.value = true }) {
+            Text(text = "Submit")
+            Spacer(Modifier.size(ButtonDefaults.IconSize))
+            Icon(Icons.Filled.Check, "Submit Button")
+        }
+    }
 }
