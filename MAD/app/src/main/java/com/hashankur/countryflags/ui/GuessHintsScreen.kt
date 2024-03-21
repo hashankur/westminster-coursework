@@ -16,17 +16,19 @@ import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import com.hashankur.countryflags.readJSON
+import com.hashankur.countryflags.ActionButton
+import com.hashankur.countryflags.FlagImage
+import com.hashankur.countryflags.countryKeyValues
+import com.hashankur.countryflags.flagByCountryCode
 
 @Composable
 fun GuessHintsScreen() {
-    val countries = readJSON()
-    val countryKeys = countries.keys().asSequence().toList()
-    val countryValues = countryKeys.map { countries[it] as String }.toList().sorted()
+    val (countries, countryKeys, countryValues) = countryKeyValues()
+    val isCorrect = rememberSaveable { mutableStateOf(false) }
+    val openAlertDialog = rememberSaveable { mutableStateOf(false) }
+    val nextRound = rememberSaveable { mutableStateOf(false) }
 
-    // TODO: do not repeat the same country
     val random = rememberSaveable { mutableStateOf(countryKeys.random()) }
-
     val input = rememberSaveable { mutableStateOf("") }
     val guesses = rememberSaveable { mutableSetOf<Char>() }
     val dashes =
@@ -46,7 +48,7 @@ fun GuessHintsScreen() {
             .fillMaxHeight()
     ) {
         Text(countries[random.value].toString())
-        FlagByCountryCode(countryCode = random.value)
+        FlagImage(flagByCountryCode(random.value))
         Text(
             dashes.value,
             fontFamily = FontFamily.Monospace,
@@ -73,6 +75,7 @@ fun GuessHintsScreen() {
         }) {
             Text("Submit")
         }
+        ActionButton(nextRound, random, countryKeys, openAlertDialog, isCorrect)
     }
 }
 
