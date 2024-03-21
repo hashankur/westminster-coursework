@@ -19,7 +19,6 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowForward
 import androidx.compose.material.icons.filled.Check
-import androidx.compose.material.icons.filled.Info
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Card
@@ -35,14 +34,15 @@ import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import androidx.compose.ui.window.Dialog
-import org.json.JSONObject
-import java.io.InputStream
+import com.hashankur.countryflags.readJSON
 
 @Composable
 fun GuessCountryScreen() {
@@ -65,15 +65,14 @@ fun GuessCountryScreen() {
         when {
             openAlertDialog.value -> {
                 CheckAnswerDialog(
-                    onDismissRequest = { openAlertDialog.value = false; nextRound.value = true },
+                    onDismissRequest = { openAlertDialog.value = false },
                     dialogStatus = isCorrect.value,
                     country = countries[random.value].toString(),
-                    icon = Icons.Default.Info
                 )
             }
         }
-        Text(countries[random.value].toString())
-        DisplayFlagByCountryCode(countryCode = random.value)
+//        Text(countries[random.value].toString())
+        FlagByCountryCode(countryCode = random.value)
         LazyColumn(Modifier.weight(1f)) {
             items(countries.length()) {
                 val country = countryValues.elementAt(it)
@@ -85,7 +84,7 @@ fun GuessCountryScreen() {
             }
         }
         Row(horizontalArrangement = Arrangement.End, modifier = Modifier.fillMaxWidth()) {
-            ActionButton(nextRound, random, countryKeys, openAlertDialog)
+            ActionButton(nextRound, random, countryKeys, openAlertDialog, isCorrect)
         }
     }
 }
@@ -95,7 +94,6 @@ fun CheckAnswerDialog(
     onDismissRequest: () -> Unit,
     dialogStatus: Boolean,
     country: String,
-    icon: ImageVector
 ) {
     Dialog(onDismissRequest = { onDismissRequest() }) {
         // Draw a rectangle shape with rounded corners inside the dialog
@@ -112,15 +110,22 @@ fun CheckAnswerDialog(
                 verticalArrangement = Arrangement.Center,
                 horizontalAlignment = Alignment.CenterHorizontally,
             ) {
-                Icon(icon, contentDescription = "Example Icon")
                 Text(
                     text = if (dialogStatus) "CORRECT!" else "INCORRECT!",
                     modifier = Modifier.padding(16.dp),
-                    color = if (dialogStatus) Color.Green else Color.Red
+                    color = if (dialogStatus) Color(0xFF1C6B50) else Color.Red,
+                    fontWeight = FontWeight.Bold,
+                    fontSize = 35.sp
                 )
                 Text(
                     text = country,
-                    modifier = Modifier.padding(16.dp),
+                    modifier = Modifier
+                        .padding(16.dp)
+                        .align(Alignment.CenterHorizontally),
+                    color = Color(0xFF4285F4),
+                    fontWeight = FontWeight.SemiBold,
+                    fontSize = 20.sp,
+                    textAlign = TextAlign.Center
                 )
             }
         }
@@ -129,7 +134,7 @@ fun CheckAnswerDialog(
 
 
 @Composable
-fun DisplayFlagByCountryCode(countryCode: String) {
+fun FlagByCountryCode(countryCode: String) {
     val context = LocalContext.current
     val resources: Resources = context.resources
     val drawableId = resources.getIdentifier(
@@ -142,8 +147,10 @@ fun DisplayFlagByCountryCode(countryCode: String) {
         Image(
             painter = painterResource(drawableId),
             contentDescription = "Flag of $countryCode",
-            contentScale = ContentScale.FillWidth,
-            modifier = Modifier.aspectRatio(16f / 9f)
+            contentScale = ContentScale.Fit,
+            modifier = Modifier
+                .aspectRatio(16f / 9f)
+                .padding(16.dp)
         )
     } else {
         // Handle cases where the flag image is not found (optional)
@@ -165,12 +172,15 @@ fun ActionButton(
     nextRound: MutableState<Boolean>,
     random: MutableState<String>,
     countryKeys: List<String>,
-    openAlertDialog: MutableState<Boolean>
+    openAlertDialog: MutableState<Boolean>,
+    isCorrect: MutableState<Boolean>
 ) {
     if (nextRound.value) {
         FilledTonalButton(
             onClick = {
-                random.value = countryKeys.random(); nextRound.value = !nextRound.value
+                random.value = countryKeys.random()
+                nextRound.value = !nextRound.value
+                isCorrect.value = false
             }) {
             Text(text = "Next")
             Spacer(Modifier.size(ButtonDefaults.IconSize))
@@ -179,7 +189,10 @@ fun ActionButton(
 
     } else {
         Button(
-            onClick = { openAlertDialog.value = true }) {
+            onClick = {
+                openAlertDialog.value = true
+                nextRound.value = true
+            }) {
             Text(text = "Submit")
             Spacer(Modifier.size(ButtonDefaults.IconSize))
             Icon(Icons.Filled.Check, "Submit Button")
