@@ -13,8 +13,10 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.font.FontFamily
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.hashankur.countryflags.readJSON
 
 @Composable
 fun GuessHintsScreen() {
@@ -26,19 +28,32 @@ fun GuessHintsScreen() {
     val random = rememberSaveable { mutableStateOf(countryKeys.random()) }
 
     val input = rememberSaveable { mutableStateOf("") }
-    val dashes =
-        rememberSaveable { mutableStateOf("_ ".repeat(countries[random.value].toString().length)) }
     val guesses = rememberSaveable { mutableSetOf<Char>() }
+    val dashes =
+        rememberSaveable {
+            mutableStateOf(
+                (countries[random.value]
+                    .toString()
+                    .replace(Regex("[^\\w\\s]"), "_"))
+            )
+        }
+    containsChar(countries[random.value] as String, ' ', dashes, guesses)
 
     Column(
         Modifier
             .fillMaxWidth()
-            .padding(10.dp)
+            .padding(16.dp)
             .fillMaxHeight()
     ) {
         Text(countries[random.value].toString())
-        DisplayFlagByCountryCode(countryCode = random.value)
-        Text(dashes.value, fontFamily = FontFamily.Monospace, fontSize = 24.sp)
+        FlagByCountryCode(countryCode = random.value)
+        Text(
+            dashes.value,
+            fontFamily = FontFamily.Monospace,
+            fontSize = 24.sp,
+            modifier = Modifier.padding(30.dp),
+            textAlign = TextAlign.Center
+        )
         OutlinedTextField(
             value = input.value,
             onValueChange = { newValue ->
@@ -48,7 +63,12 @@ fun GuessHintsScreen() {
             modifier = Modifier.fillMaxWidth(),
         )
         Button(onClick = {
-            containsChar(countries[random.value] as String, input.value[0], dashes, guesses)
+            containsChar(
+                countries[random.value] as String,
+                if (input.value.isNotEmpty()) input.value[0] else ' ',
+                dashes,
+                guesses
+            )
             input.value = "" // Reset input
         }) {
             Text("Submit")
