@@ -50,7 +50,7 @@ fun MenuScreen(
         val infiniteTransition = rememberInfiniteTransition(label = "infinite transition")
         val animatedColor by infiniteTransition.animateColor(
             initialValue = MaterialTheme.colorScheme.primary,
-            targetValue = MaterialTheme.colorScheme.secondary,
+            targetValue = MaterialTheme.colorScheme.tertiary,
             animationSpec = infiniteRepeatable(tween(2000), RepeatMode.Reverse),
             label = "color"
         )
