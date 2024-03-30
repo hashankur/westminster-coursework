@@ -1,6 +1,8 @@
 package com.hashankur.countryflags
 
 import android.annotation.SuppressLint
+import android.content.Context
+import android.content.Intent
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
@@ -20,16 +22,15 @@ import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalContext
 import androidx.navigation.NavHostController
-import androidx.navigation.compose.NavHost
-import androidx.navigation.compose.composable
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
-import com.hashankur.countryflags.ui.AdvancedLevelScreen
-import com.hashankur.countryflags.ui.GuessCountryScreen
-import com.hashankur.countryflags.ui.GuessFlagScreen
-import com.hashankur.countryflags.ui.GuessHintsScreen
-import com.hashankur.countryflags.ui.MenuScreen
+import com.hashankur.countryflags.ui.GuessAdvancedActivity
+import com.hashankur.countryflags.ui.GuessCountryActivity
+import com.hashankur.countryflags.ui.GuessFlagActivity
+import com.hashankur.countryflags.ui.GuessHintsActivity
+import com.hashankur.countryflags.ui.components.MenuScreen
 import com.hashankur.countryflags.ui.theme.CountryFlagsTheme
 
 class MainActivity : ComponentActivity() {
@@ -42,95 +43,104 @@ class MainActivity : ComponentActivity() {
             val currentRoute =
                 navController.currentBackStackEntryAsState().value?.destination?.route
             CountryFlagsTheme {
-                Scaffold(
-                    topBar = {
-                        when (currentRoute) {
-                            "guess_country" -> {
-                                TopBarBuilder(title = "Guess Country", navController)
-                            }
+                // A surface container using the 'background' color from the theme
+                Surface(
+                    modifier = Modifier
+                        .fillMaxSize(),
+                    color = MaterialTheme.colorScheme.background
+                ) {
+                    Scaffold(
+                        topBar = {
+                            when (currentRoute) {
+                                "guess_country" -> {
+                                    TopBarBuilder(title = "Guess Country", navController)
+                                }
 
-                            "guess_hints" -> {
-                                TopBarBuilder(title = "Guess Hints", navController)
-                            }
+                                "guess_hints" -> {
+                                    TopBarBuilder(title = "Guess Hints", navController)
+                                }
 
-                            "guess_flag" -> {
-                                TopBarBuilder(title = "Guess Flag", navController)
-                            }
+                                "guess_flag" -> {
+                                    TopBarBuilder(title = "Guess Flag", navController)
+                                }
 
-                            "advanced_level" -> {
-                                TopBarBuilder(title = "Advanced Level", navController)
-                            }
+                                "advanced_level" -> {
+                                    TopBarBuilder(title = "Advanced Level", navController)
+                                }
 
-                            else -> {
-                                CenterAlignedTopAppBar(
-                                    colors = TopAppBarDefaults.centerAlignedTopAppBarColors(
-                                        containerColor = MaterialTheme.colorScheme.primary,
-                                        titleContentColor = MaterialTheme.colorScheme.onPrimary
-                                    ),
-                                    title = {
-                                        Text(getString(R.string.app_name))
-                                    },
+                                else -> {
+                                    CenterAlignedTopAppBar(
+                                        colors = TopAppBarDefaults.centerAlignedTopAppBarColors(
+                                            containerColor = MaterialTheme.colorScheme.primary,
+                                            titleContentColor = MaterialTheme.colorScheme.onPrimary
+                                        ),
+                                        title = {
+                                            Text(getString(R.string.app_name))
+                                        },
+                                    )
+                                }
+                            }
+                        },
+                    ) { innerPadding -> // Padding for top bar
+                        val context = LocalContext.current
+                        MenuScreen(
+                            modifier = Modifier.padding(innerPadding),
+                            onNavigateToGuessCountry = {
+                                navigateToActivity(
+                                    context,
+                                    GuessCountryActivity::class.java
                                 )
-                            }
-                        }
-                    },
-                ) { innerPadding -> // Padding for top bar
-                    // A surface container using the 'background' color from the theme
-                    Surface(
-                        modifier = Modifier
-                            .fillMaxSize()
-                            .padding(innerPadding),
-                        color = MaterialTheme.colorScheme.background
-                    ) {
-                        // https://developer.android.com/guide/navigation/use-graph/navigate
-                        NavHost(navController, startDestination = "home") {
-                            composable(route = "home") {
-                                MenuScreen(
-                                    onNavigateToGuessCountry = { navController.navigate("guess_country") },
-                                    onNavigateToGuessHints = { navController.navigate("guess_hints") },
-                                    onNavigateToGuessFlag = { navController.navigate("guess_flag") },
-                                    onNavigateToAdvancedLevel = { navController.navigate("advanced_level") }
+                            },
+                            onNavigateToGuessHints = {
+                                navigateToActivity(
+                                    context,
+                                    GuessHintsActivity::class.java
                                 )
-                            }
-                            composable(route = "guess_country") {
-                                GuessCountryScreen()
-                            }
-                            composable(route = "guess_hints") {
-                                GuessHintsScreen()
-                            }
-                            composable(route = "guess_flag") {
-                                GuessFlagScreen()
-                            }
-                            composable(route = "advanced_level") {
-                                AdvancedLevelScreen()
-                            }
-                        }
+                            },
+                            onNavigateToGuessFlag = {
+                                navigateToActivity(
+                                    context,
+                                    GuessFlagActivity::class.java
+                                )
+                            },
+                            onNavigateToAdvancedLevel = {
+                                navigateToActivity(
+                                    context,
+                                    GuessAdvancedActivity::class.java
+                                )
+                            },
+                        )
                     }
                 }
             }
         }
     }
-
-    @OptIn(ExperimentalMaterial3Api::class)
-    @Composable
-    fun TopBarBuilder(title: String, navController: NavHostController) {
-        TopAppBar(
-            colors = TopAppBarDefaults.centerAlignedTopAppBarColors(
-                containerColor = MaterialTheme.colorScheme.primary,
-                titleContentColor = MaterialTheme.colorScheme.onPrimary
-            ),
-            title = {
-                Text(title)
-            },
-            navigationIcon = {
-                IconButton(onClick = { navController.navigateUp() }) {
-                    Icon(
-                        imageVector = Icons.AutoMirrored.Filled.ArrowBack,
-                        contentDescription = "Back button",
-                        tint = MaterialTheme.colorScheme.onPrimary
-                    )
-                }
-            }
-        )
-    }
 }
+
+@OptIn(ExperimentalMaterial3Api::class)
+@Composable
+fun TopBarBuilder(title: String, navController: NavHostController) {
+    TopAppBar(
+        colors = TopAppBarDefaults.centerAlignedTopAppBarColors(
+            containerColor = MaterialTheme.colorScheme.onPrimary,
+            titleContentColor = MaterialTheme.colorScheme.primary
+        ),
+        title = {
+            Text(title)
+        },
+        navigationIcon = {
+            IconButton(onClick = { navController.navigateUp() }) {
+                Icon(
+                    imageVector = Icons.AutoMirrored.Filled.ArrowBack,
+                    contentDescription = "Go back",
+                    tint = MaterialTheme.colorScheme.onPrimary
+                )
+            }
+        }
+    )
+}
+
+fun navigateToActivity(context: Context, activity: Class<*>) {
+    Intent(context, activity).also { context.startActivity(it) }
+}
+

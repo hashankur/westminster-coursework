@@ -1,4 +1,4 @@
-package com.hashankur.countryflags.ui
+package com.hashankur.countryflags.ui.components
 
 import androidx.compose.animation.animateColor
 import androidx.compose.animation.core.RepeatMode
@@ -23,21 +23,8 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 
 @Composable
-fun MenuButton(name: String, onClick: () -> Unit) {
-    Button(
-        onClick,
-        Modifier
-            .width(400.dp)
-            .height(100.dp)
-            .padding(20.dp)
-    )
-    {
-        Text(name, fontSize = 20.sp)
-    }
-}
-
-@Composable
 fun MenuScreen(
+    modifier: Modifier,
     onNavigateToGuessCountry: () -> Unit,
     onNavigateToGuessHints: () -> Unit,
     onNavigateToGuessFlag: () -> Unit,
@@ -46,6 +33,7 @@ fun MenuScreen(
     Column(
         horizontalAlignment = Alignment.CenterHorizontally,
         verticalArrangement = Arrangement.Center,
+        modifier = modifier.padding(vertical = 80.dp)
     ) {
         val infiniteTransition = rememberInfiniteTransition(label = "infinite transition")
         val animatedColor by infiniteTransition.animateColor(
@@ -69,5 +57,19 @@ fun MenuScreen(
         MenuButton("Guess Hints", onClick = onNavigateToGuessHints)
         MenuButton("Guess the Flag", onClick = onNavigateToGuessFlag)
         MenuButton("Advanced Level", onClick = onNavigateToAdvancedLevel)
+    }
+}
+
+@Composable
+fun MenuButton(name: String, onClick: () -> Unit) {
+    Button(
+        onClick,
+        Modifier
+            .width(400.dp)
+            .height(100.dp)
+            .padding(20.dp)
+    )
+    {
+        Text(name, fontSize = 20.sp)
     }
 }

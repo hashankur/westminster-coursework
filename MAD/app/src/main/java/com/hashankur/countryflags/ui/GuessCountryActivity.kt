@@ -1,5 +1,8 @@
 package com.hashankur.countryflags.ui
 
+import android.os.Bundle
+import androidx.activity.ComponentActivity
+import androidx.activity.compose.setContent
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -13,6 +16,8 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Card
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.ListItem
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.mutableStateOf
@@ -29,46 +34,61 @@ import com.hashankur.countryflags.ActionButton
 import com.hashankur.countryflags.FlagImage
 import com.hashankur.countryflags.countryKeyValues
 import com.hashankur.countryflags.flagByCountryCode
+import com.hashankur.countryflags.ui.theme.CountryFlagsTheme
 
-@Composable
-fun GuessCountryScreen() {
-    val (countries, countryKeys, countryValues) = countryKeyValues()
+class GuessCountryActivity : ComponentActivity() {
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        setContent {
+            CountryFlagsTheme {
+                // A surface container using the 'background' color from the theme
+                Surface(
+                    modifier = Modifier.fillMaxSize(),
+                    color = MaterialTheme.colorScheme.background
+                ) {
+                    val (countries, countryKeys, countryValues) = countryKeyValues()
 
-    // TODO: do not repeat the same country
-    val random = rememberSaveable { mutableStateOf(countryKeys.random()) }
-    val isCorrect = rememberSaveable { mutableStateOf(false) }
-    val openAlertDialog = rememberSaveable { mutableStateOf(false) }
-    val nextRound = rememberSaveable { mutableStateOf(false) }
+                    // TODO: do not repeat the same country
+                    val random = rememberSaveable { mutableStateOf(countryKeys.random()) }
+                    val isCorrect = rememberSaveable { mutableStateOf(false) }
+                    val openAlertDialog = rememberSaveable { mutableStateOf(false) }
+                    val nextRound = rememberSaveable { mutableStateOf(false) }
 
-    Column(
-        Modifier
-            .fillMaxWidth()
-            .padding(10.dp)
-            .fillMaxHeight()
-    ) {
-        when {
-            openAlertDialog.value -> {
-                CheckAnswerDialog(
-                    onDismissRequest = { openAlertDialog.value = false },
-                    dialogStatus = isCorrect.value,
-                    country = countries[random.value].toString(),
-                )
+                    Column(
+                        Modifier
+                            .fillMaxWidth()
+                            .padding(10.dp)
+                            .fillMaxHeight()
+                    ) {
+                        when {
+                            openAlertDialog.value -> {
+                                CheckAnswerDialog(
+                                    onDismissRequest = { openAlertDialog.value = false },
+                                    dialogStatus = isCorrect.value,
+                                    country = countries[random.value].toString(),
+                                )
+                            }
+                        }
+                        //        Text(countries[random.value].toString())
+                        FlagImage(flagByCountryCode(random.value))
+
+                        LazyColumn(Modifier.weight(1f)) {
+                            items(countries.length()) {
+                                val country = countryValues.elementAt(it)
+                                ListItem(
+                                    headlineContent = { Text(country) },
+                                    Modifier.clickable {
+                                        isCorrect.value = (country == countries[random.value])
+                                    }
+                                )
+                                HorizontalDivider()
+                            }
+                        }
+                        ActionButton(nextRound, random, countryKeys, openAlertDialog, isCorrect)
+                    }
+                }
             }
         }
-//        Text(countries[random.value].toString())
-        FlagImage(flagByCountryCode(random.value))
-
-        LazyColumn(Modifier.weight(1f)) {
-            items(countries.length()) {
-                val country = countryValues.elementAt(it)
-                ListItem(
-                    headlineContent = { Text(country) },
-                    Modifier.clickable { isCorrect.value = (country == countries[random.value]) }
-                )
-                HorizontalDivider()
-            }
-        }
-        ActionButton(nextRound, random, countryKeys, openAlertDialog, isCorrect)
     }
 }
 
