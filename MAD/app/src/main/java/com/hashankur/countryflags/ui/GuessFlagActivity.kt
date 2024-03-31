@@ -4,6 +4,7 @@ import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
@@ -11,13 +12,17 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.Button
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
+import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import com.hashankur.countryflags.FlagImage
+import com.hashankur.countryflags.R
 import com.hashankur.countryflags.countryKeyValues
 import com.hashankur.countryflags.flagByCountryCode
+import com.hashankur.countryflags.ui.components.TopBarBuilder
 import com.hashankur.countryflags.ui.theme.CountryFlagsTheme
 
 class GuessFlagActivity : ComponentActivity() {
@@ -30,27 +35,41 @@ class GuessFlagActivity : ComponentActivity() {
                     modifier = Modifier.fillMaxSize(),
                     color = MaterialTheme.colorScheme.background
                 ) {
-                    val (countries, countryKeys, countryValues) = countryKeyValues()
-
-                    val displayedCountries = (1..3).map { countryKeys.random() }
-
-                    Column(
-                        Modifier
-                            .fillMaxWidth()
-                            .padding(10.dp)
-                            .fillMaxHeight()
-                    ) {
-                        (1..3).forEach { index ->
-                            FlagImage(flagByCountryCode(displayedCountries[index - 1]))
-                            Spacer(modifier = Modifier.padding(0.dp))
+                    Scaffold(
+                        topBar = {
+                            TopBarBuilder(
+                                getString(R.string.mode3), goBack = { finish() }
+                            )
                         }
-                        Text(countries[displayedCountries.random()].toString())
-                        Button(onClick = { /*TODO*/ }) {
-                            Text(text = "Submit")
-                        }
+                    ) { innerPadding ->
+                        GuessFlagScreen(innerPadding)
                     }
                 }
             }
+        }
+    }
+}
+
+@Composable
+fun GuessFlagScreen(innerPadding: PaddingValues) {
+    val (countries, countryKeys, countryValues) = countryKeyValues()
+
+    val displayedCountries = (1..3).map { countryKeys.random() }
+
+    Column(
+        Modifier
+            .fillMaxWidth()
+            .padding(innerPadding)
+            .padding(16.dp)
+            .fillMaxHeight()
+    ) {
+        (1..3).forEach { index ->
+            FlagImage(flagByCountryCode(displayedCountries[index - 1]))
+            Spacer(modifier = Modifier.padding(0.dp))
+        }
+        Text(countries[displayedCountries.random()].toString())
+        Button(onClick = { /*TODO*/ }) {
+            Text(text = "Submit")
         }
     }
 }

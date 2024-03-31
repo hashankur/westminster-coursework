@@ -59,7 +59,7 @@ fun FlagImage(resource: Pair<Int, String>) {
         contentScale = ContentScale.Fit,
         modifier = Modifier
             .aspectRatio(16f / 9f)
-            .padding(16.dp)
+            .padding(bottom = 10.dp)
     )
 }
 
@@ -89,7 +89,7 @@ fun ActionButton(
                 }) {
                 Text(text = "Next")
                 Spacer(Modifier.size(ButtonDefaults.IconSize))
-                Icon(Icons.AutoMirrored.Filled.ArrowForward, "Next Button")
+                Icon(Icons.AutoMirrored.Filled.ArrowForward, "Next")
             }
 
         } else {
@@ -100,7 +100,7 @@ fun ActionButton(
                 }) {
                 Text(text = "Submit")
                 Spacer(Modifier.size(ButtonDefaults.IconSize))
-                Icon(Icons.Filled.Check, "Submit Button")
+                Icon(Icons.Filled.Check, "Submit")
             }
         }
     }

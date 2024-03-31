@@ -1,3 +1,7 @@
 <resources>
     <string name="app_name">Country Flags</string>
+    <string name="mode1">Guess the Country</string>
+    <string name="mode2">Guess Hints</string>
+    <string name="mode3">Guess the Flag</string>
+    <string name="mode4">Advanced Level</string>
 </resources>

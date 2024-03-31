@@ -7,6 +7,7 @@ import androidx.compose.animation.core.rememberInfiniteTransition
 import androidx.compose.animation.core.tween
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
@@ -24,7 +25,7 @@ import androidx.compose.ui.unit.sp
 
 @Composable
 fun MenuScreen(
-    modifier: Modifier,
+    innerPadding: PaddingValues,
     onNavigateToGuessCountry: () -> Unit,
     onNavigateToGuessHints: () -> Unit,
     onNavigateToGuessFlag: () -> Unit,
@@ -33,7 +34,9 @@ fun MenuScreen(
     Column(
         horizontalAlignment = Alignment.CenterHorizontally,
         verticalArrangement = Arrangement.Center,
-        modifier = modifier.padding(vertical = 80.dp)
+        modifier = Modifier
+            .padding(innerPadding)
+            .padding(vertical = 80.dp)
     ) {
         val infiniteTransition = rememberInfiniteTransition(label = "infinite transition")
         val animatedColor by infiniteTransition.animateColor(

@@ -6,6 +6,7 @@ import androidx.activity.compose.setContent
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -17,6 +18,7 @@ import androidx.compose.material3.Card
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.ListItem
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -32,8 +34,10 @@ import androidx.compose.ui.unit.sp
 import androidx.compose.ui.window.Dialog
 import com.hashankur.countryflags.ActionButton
 import com.hashankur.countryflags.FlagImage
+import com.hashankur.countryflags.R
 import com.hashankur.countryflags.countryKeyValues
 import com.hashankur.countryflags.flagByCountryCode
+import com.hashankur.countryflags.ui.components.TopBarBuilder
 import com.hashankur.countryflags.ui.theme.CountryFlagsTheme
 
 class GuessCountryActivity : ComponentActivity() {
@@ -41,54 +45,67 @@ class GuessCountryActivity : ComponentActivity() {
         super.onCreate(savedInstanceState)
         setContent {
             CountryFlagsTheme {
-                // A surface container using the 'background' color from the theme
                 Surface(
                     modifier = Modifier.fillMaxSize(),
                     color = MaterialTheme.colorScheme.background
                 ) {
-                    val (countries, countryKeys, countryValues) = countryKeyValues()
-
-                    // TODO: do not repeat the same country
-                    val random = rememberSaveable { mutableStateOf(countryKeys.random()) }
-                    val isCorrect = rememberSaveable { mutableStateOf(false) }
-                    val openAlertDialog = rememberSaveable { mutableStateOf(false) }
-                    val nextRound = rememberSaveable { mutableStateOf(false) }
-
-                    Column(
-                        Modifier
-                            .fillMaxWidth()
-                            .padding(10.dp)
-                            .fillMaxHeight()
-                    ) {
-                        when {
-                            openAlertDialog.value -> {
-                                CheckAnswerDialog(
-                                    onDismissRequest = { openAlertDialog.value = false },
-                                    dialogStatus = isCorrect.value,
-                                    country = countries[random.value].toString(),
-                                )
-                            }
+                    Scaffold(
+                        topBar = {
+                            TopBarBuilder(
+                                getString(R.string.mode1), goBack = { finish() }
+                            )
                         }
-                        //        Text(countries[random.value].toString())
-                        FlagImage(flagByCountryCode(random.value))
-
-                        LazyColumn(Modifier.weight(1f)) {
-                            items(countries.length()) {
-                                val country = countryValues.elementAt(it)
-                                ListItem(
-                                    headlineContent = { Text(country) },
-                                    Modifier.clickable {
-                                        isCorrect.value = (country == countries[random.value])
-                                    }
-                                )
-                                HorizontalDivider()
-                            }
-                        }
-                        ActionButton(nextRound, random, countryKeys, openAlertDialog, isCorrect)
+                    ) { innerPadding ->
+                        GuessCountryScreen(innerPadding)
                     }
                 }
             }
         }
+    }
+}
+
+@Composable
+fun GuessCountryScreen(innerPadding: PaddingValues) {
+    val (countries, countryKeys, countryValues) = countryKeyValues()
+
+    // TODO: do not repeat the same country
+    val random = rememberSaveable { mutableStateOf(countryKeys.random()) }
+    val isCorrect = rememberSaveable { mutableStateOf(false) }
+    val openAlertDialog = rememberSaveable { mutableStateOf(false) }
+    val nextRound = rememberSaveable { mutableStateOf(false) }
+
+    Column(
+        Modifier
+            .fillMaxWidth()
+            .padding(innerPadding)
+            .padding(16.dp)
+            .fillMaxHeight()
+    ) {
+        when {
+            openAlertDialog.value -> {
+                CheckAnswerDialog(
+                    onDismissRequest = { openAlertDialog.value = false },
+                    dialogStatus = isCorrect.value,
+                    country = countries[random.value].toString(),
+                )
+            }
+        }
+        //        Text(countries[random.value].toString())
+        FlagImage(flagByCountryCode(random.value))
+
+        LazyColumn(Modifier.weight(1f)) {
+            items(countries.length()) {
+                val country = countryValues.elementAt(it)
+                ListItem(
+                    headlineContent = { Text(country) },
+                    Modifier.clickable {
+                        isCorrect.value = (country == countries[random.value])
+                    }
+                )
+                HorizontalDivider()
+            }
+        }
+        ActionButton(nextRound, random, countryKeys, openAlertDialog, isCorrect)
     }
 }
 
@@ -116,7 +133,7 @@ fun CheckAnswerDialog(
                 Text(
                     text = if (dialogStatus) "CORRECT!" else "INCORRECT!",
                     modifier = Modifier.padding(16.dp),
-                    color = if (dialogStatus) Color(0xFF1C6B50) else Color.Red,
+                    color = if (dialogStatus) Color(0xFF1C6B50) else Color(0xFFFF5A39),
                     fontWeight = FontWeight.Bold,
                     fontSize = 35.sp
                 )
