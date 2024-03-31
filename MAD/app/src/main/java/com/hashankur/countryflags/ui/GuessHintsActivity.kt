@@ -17,8 +17,12 @@ import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.MutableState
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
 import androidx.compose.runtime.saveable.rememberSaveable
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.style.TextAlign
@@ -60,7 +64,7 @@ class GuessHintsActivity : ComponentActivity() {
 fun GuessHintsScreen(innerPadding: PaddingValues) {
     val (countries, countryKeys, countryValues) = countryKeyValues()
     val isCorrect = rememberSaveable { mutableStateOf(false) }
-    val openAlertDialog = rememberSaveable { mutableStateOf(false) }
+    var openAlertDialog = rememberSaveable { mutableStateOf(false) }
     val nextRound = rememberSaveable { mutableStateOf(false) }
 
     val random = rememberSaveable { mutableStateOf(countryKeys.random()) }
@@ -75,6 +79,7 @@ fun GuessHintsScreen(innerPadding: PaddingValues) {
             )
         }
     containsChar(countries[random.value] as String, ' ', dashes, guesses)
+    var incorrectCount by remember { mutableIntStateOf(0) }
 
     Column(
         Modifier
@@ -83,6 +88,19 @@ fun GuessHintsScreen(innerPadding: PaddingValues) {
             .padding(16.dp)
             .fillMaxHeight()
     ) {
+        when {
+            openAlertDialog.value -> {
+                CheckAnswerDialog(
+                    onDismissRequest = {
+                        openAlertDialog.value = false
+                        incorrectCount = 0
+                        isCorrect.value = false
+                    },
+                    dialogStatus = isCorrect.value,
+                    country = countries[random.value].toString(),
+                )
+            }
+        }
         Text(countries[random.value].toString())
         FlagImage(flagByCountryCode(random.value))
         Text(
@@ -101,16 +119,28 @@ fun GuessHintsScreen(innerPadding: PaddingValues) {
             modifier = Modifier.fillMaxWidth(),
         )
         Button(onClick = {
-            containsChar(
+            val contains = containsChar(
                 countries[random.value] as String,
                 if (input.value.isNotEmpty()) input.value[0] else ' ',
                 dashes,
                 guesses
             )
             input.value = "" // Reset input
+            if (!contains) incorrectCount++
         }) {
-            Text("Submit")
+            Text("Check letter")
         }
+        Text("Incorrect guesses: $incorrectCount")
+        if (incorrectCount >= 3) {
+            openAlertDialog.value = true
+            nextRound.value = true
+        }
+        if (!dashes.value.contains('_') && !nextRound.value) {
+            openAlertDialog.value = true
+            nextRound.value = true
+            isCorrect.value = true
+        }
+        // TODO: Clear guesses
         ActionButton(nextRound, random, countryKeys, openAlertDialog, isCorrect)
     }
 }
@@ -120,11 +150,14 @@ fun containsChar(
     char: Char,
     dashes: MutableState<String>,
     guesses: MutableSet<Char>
-) {
+): Boolean {
+    var contains = false
     if (word.contains(char, ignoreCase = true)) {
         guesses.add(char)
+        contains = true
     }
     dashes.value =
         word.map { if (guesses.contains(it.lowercaseChar())) it else '_' }
             .joinToString(" ") + " "
+    return contains
 }

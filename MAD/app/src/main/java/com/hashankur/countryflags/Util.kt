@@ -80,6 +80,7 @@ fun ActionButton(
     isCorrect: MutableState<Boolean>
 ) {
     Row(horizontalArrangement = Arrangement.End, modifier = Modifier.fillMaxWidth()) {
+        // TODO: Use a single button
         if (nextRound.value) {
             FilledTonalButton(
                 onClick = {

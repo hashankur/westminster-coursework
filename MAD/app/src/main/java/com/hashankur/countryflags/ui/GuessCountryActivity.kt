@@ -131,7 +131,7 @@ fun CheckAnswerDialog(
                 horizontalAlignment = Alignment.CenterHorizontally,
             ) {
                 Text(
-                    text = if (dialogStatus) "CORRECT!" else "INCORRECT!",
+                    text = if (dialogStatus) "CORRECT!" else "WRONG!",
                     modifier = Modifier.padding(16.dp),
                     color = if (dialogStatus) Color(0xFF1C6B50) else Color(0xFFFF5A39),
                     fontWeight = FontWeight.Bold,
