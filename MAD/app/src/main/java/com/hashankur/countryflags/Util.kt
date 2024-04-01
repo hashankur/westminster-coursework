@@ -2,22 +2,10 @@ package com.hashankur.countryflags
 
 import android.content.res.Resources
 import androidx.compose.foundation.Image
-import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.aspectRatio
-import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.size
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.automirrored.filled.ArrowForward
-import androidx.compose.material.icons.filled.Check
-import androidx.compose.material3.Button
-import androidx.compose.material3.ButtonDefaults
-import androidx.compose.material3.FilledTonalButton
-import androidx.compose.material3.Icon
-import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.MutableState
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
@@ -70,27 +58,19 @@ fun countryKeyValues(): Triple<JSONObject, List<String>, List<String>> {
     return Triple(countries, countryKeys, countryValues)
 }
 
-@Composable
-fun ActionButton(
-    nextRound: Boolean,
-    submit: () -> Unit,
-    next: () -> Unit,
-) {
-    Row(horizontalArrangement = Arrangement.End, modifier = Modifier.fillMaxWidth()) {
-        // TODO: Use a single button
-        if (nextRound) {
-            FilledTonalButton(onClick = { next() }) {
-                Text(text = "Next")
-                Spacer(Modifier.size(ButtonDefaults.IconSize))
-                Icon(Icons.AutoMirrored.Filled.ArrowForward, "Next")
-            }
-
-        } else {
-            Button(onClick = { submit() }) {
-                Text(text = "Submit")
-                Spacer(Modifier.size(ButtonDefaults.IconSize))
-                Icon(Icons.Filled.Check, "Submit")
-            }
-        }
+fun containsChar(
+    word: String,
+    char: Char,
+    dashes: MutableState<String>,
+    guesses: MutableSet<Char>
+): Boolean {
+    var contains = false
+    if (word.contains(char, ignoreCase = true)) {
+        guesses.add(char)
+        contains = true
     }
+    dashes.value =
+        word.map { if (guesses.contains(it.lowercaseChar())) it else '_' }
+            .joinToString(" ") + " "
+    return contains
 }

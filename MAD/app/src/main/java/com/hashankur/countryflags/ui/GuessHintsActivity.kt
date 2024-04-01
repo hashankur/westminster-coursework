@@ -4,7 +4,6 @@ import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -15,8 +14,7 @@ import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
-import androidx.compose.runtime.Composable
-import androidx.compose.runtime.MutableState
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateOf
@@ -30,8 +28,11 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.hashankur.countryflags.FlagImage
 import com.hashankur.countryflags.R
+import com.hashankur.countryflags.containsChar
 import com.hashankur.countryflags.countryKeyValues
 import com.hashankur.countryflags.flagByCountryCode
+import com.hashankur.countryflags.ui.components.CheckAnswerDialog
+import com.hashankur.countryflags.ui.components.GoToNextLevel
 import com.hashankur.countryflags.ui.components.TopBarBuilder
 import com.hashankur.countryflags.ui.theme.CountryFlagsTheme
 
@@ -44,119 +45,109 @@ class GuessHintsActivity : ComponentActivity() {
                     modifier = Modifier.fillMaxSize(),
                     color = MaterialTheme.colorScheme.background
                 ) {
+                    val (countries, countryKeys, countryValues) = countryKeyValues()
+                    var isCorrect by rememberSaveable { mutableStateOf(false) }
+                    var openAlertDialog by rememberSaveable { mutableStateOf(false) }
+
+                    var random by rememberSaveable { mutableStateOf(countryKeys.random()) }
+                    var input by rememberSaveable { mutableStateOf("") }
+                    val guesses = rememberSaveable { mutableSetOf<Char>() }
+                    val dashes =
+                        rememberSaveable {
+                            mutableStateOf(
+                                (countries[random]
+                                    .toString()
+                                    .replace(Regex("[^\\w\\s]"), "_"))
+                            )
+                        }
+                    containsChar(countries[random] as String, ' ', dashes, guesses)
+                    var incorrectCount by remember { mutableIntStateOf(0) }
+
+                    var nextRound by rememberSaveable { mutableStateOf(false) }
+
                     Scaffold(
                         topBar = {
                             TopBarBuilder(
                                 getString(R.string.mode2), goBack = { finish() }
                             )
-                        }
+                        },
+                        floatingActionButton = {
+                            GoToNextLevel(nextRound, action = { nextRound = !nextRound })
+                        },
                     ) { innerPadding ->
-                        GuessHintsScreen(innerPadding)
+                        LaunchedEffect(nextRound) {
+                            if (nextRound) openAlertDialog = true
+                            else {
+                                random = countryKeys.random()
+                                isCorrect = false
+                            }
+                        }
+
+                        Column(
+                            Modifier
+                                .fillMaxWidth()
+                                .padding(innerPadding)
+                                .padding(16.dp)
+                                .fillMaxHeight()
+                        ) {
+                            when {
+                                openAlertDialog -> {
+                                    CheckAnswerDialog(
+                                        onDismissRequest = {
+                                            openAlertDialog = false
+                                            incorrectCount = 0
+                                            isCorrect = false
+                                        },
+                                        dialogStatus = isCorrect,
+                                        country = countries[random].toString(),
+                                    )
+                                }
+                            }
+                            Text(countries[random].toString())
+                            FlagImage(flagByCountryCode(random))
+                            Text(
+                                dashes.value,
+                                fontFamily = FontFamily.Monospace,
+                                fontSize = 24.sp,
+                                modifier = Modifier.padding(30.dp),
+                                textAlign = TextAlign.Center
+                            )
+                            OutlinedTextField(
+                                value = input,
+                                onValueChange = { newValue ->
+                                    input = newValue.take(1) // Limit to max 1 character
+                                },
+                                label = { Text("Type a character") },
+                                modifier = Modifier.fillMaxWidth(),
+                            )
+                            // Spacer(modifier = Modifier.weight(1f))
+                            Button(onClick = {
+                                val contains = containsChar(
+                                    countries[random] as String,
+                                    if (input.isNotEmpty()) input[0] else ' ',
+                                    dashes,
+                                    guesses
+                                )
+                                input = "" // Reset input
+                                if (!contains) incorrectCount++
+                            }) {
+                                Text("Check letter")
+                            }
+                            Text("Incorrect guesses: $incorrectCount")
+                            if (incorrectCount >= 3) {
+                                openAlertDialog = true
+                                nextRound = true
+                            }
+                            if (!dashes.value.contains('_') && !nextRound) {
+                                openAlertDialog = true
+                                nextRound = true
+                                isCorrect = true
+                            }
+                            // TODO: Clear guesses
+                        }
                     }
                 }
             }
         }
     }
-}
-
-@Composable
-fun GuessHintsScreen(innerPadding: PaddingValues) {
-    val (countries, countryKeys, countryValues) = countryKeyValues()
-    val isCorrect = rememberSaveable { mutableStateOf(false) }
-    var openAlertDialog = rememberSaveable { mutableStateOf(false) }
-    val nextRound = rememberSaveable { mutableStateOf(false) }
-
-    val random = rememberSaveable { mutableStateOf(countryKeys.random()) }
-    val input = rememberSaveable { mutableStateOf("") }
-    val guesses = rememberSaveable { mutableSetOf<Char>() }
-    val dashes =
-        rememberSaveable {
-            mutableStateOf(
-                (countries[random.value]
-                    .toString()
-                    .replace(Regex("[^\\w\\s]"), "_"))
-            )
-        }
-    containsChar(countries[random.value] as String, ' ', dashes, guesses)
-    var incorrectCount by remember { mutableIntStateOf(0) }
-
-    Column(
-        Modifier
-            .fillMaxWidth()
-            .padding(innerPadding)
-            .padding(16.dp)
-            .fillMaxHeight()
-    ) {
-        when {
-            openAlertDialog.value -> {
-                CheckAnswerDialog(
-                    onDismissRequest = {
-                        openAlertDialog.value = false
-                        incorrectCount = 0
-                        isCorrect.value = false
-                    },
-                    dialogStatus = isCorrect.value,
-                    country = countries[random.value].toString(),
-                )
-            }
-        }
-        Text(countries[random.value].toString())
-        FlagImage(flagByCountryCode(random.value))
-        Text(
-            dashes.value,
-            fontFamily = FontFamily.Monospace,
-            fontSize = 24.sp,
-            modifier = Modifier.padding(30.dp),
-            textAlign = TextAlign.Center
-        )
-        OutlinedTextField(
-            value = input.value,
-            onValueChange = { newValue ->
-                input.value = newValue.take(1) // Limit to max 1 character
-            },
-            label = { Text("Type a character") },
-            modifier = Modifier.fillMaxWidth(),
-        )
-        Button(onClick = {
-            val contains = containsChar(
-                countries[random.value] as String,
-                if (input.value.isNotEmpty()) input.value[0] else ' ',
-                dashes,
-                guesses
-            )
-            input.value = "" // Reset input
-            if (!contains) incorrectCount++
-        }) {
-            Text("Check letter")
-        }
-        Text("Incorrect guesses: $incorrectCount")
-        if (incorrectCount >= 3) {
-            openAlertDialog.value = true
-            nextRound.value = true
-        }
-        if (!dashes.value.contains('_') && !nextRound.value) {
-            openAlertDialog.value = true
-            nextRound.value = true
-            isCorrect.value = true
-        }
-        // TODO: Clear guesses
-//        ActionButton(nextRound, random, countryKeys, openAlertDialog, isCorrect)
-    }
-}
-
-fun containsChar(
-    word: String,
-    char: Char,
-    dashes: MutableState<String>,
-    guesses: MutableSet<Char>
-): Boolean {
-    var contains = false
-    if (word.contains(char, ignoreCase = true)) {
-        guesses.add(char)
-        contains = true
-    }
-    dashes.value =
-        word.map { if (guesses.contains(it.lowercaseChar())) it else '_' }
-            .joinToString(" ") + " "
-    return contains
 }
