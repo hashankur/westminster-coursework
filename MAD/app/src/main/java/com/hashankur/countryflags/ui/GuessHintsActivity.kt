@@ -4,9 +4,11 @@ import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.Button
 import androidx.compose.material3.MaterialTheme
@@ -112,26 +114,33 @@ class GuessHintsActivity : ComponentActivity() {
                                 modifier = Modifier.padding(30.dp),
                                 textAlign = TextAlign.Center
                             )
-                            OutlinedTextField(
-                                value = input,
-                                onValueChange = { newValue ->
-                                    input = newValue.take(1) // Limit to max 1 character
-                                },
-                                label = { Text("Type a character") },
-                                modifier = Modifier.fillMaxWidth(),
-                            )
-                            // Spacer(modifier = Modifier.weight(1f))
-                            Button(onClick = {
-                                val contains = containsChar(
-                                    countries[random] as String,
-                                    if (input.isNotEmpty()) input[0] else ' ',
-                                    dashes,
-                                    guesses
+                            Row() {
+                                OutlinedTextField(
+                                    value = input,
+                                    onValueChange = { newValue ->
+                                        input = newValue.take(1) // Limit to max 1 character
+                                    },
+                                    label = { Text("Type a character") },
+                                    modifier = Modifier.fillMaxWidth(0.7f),
                                 )
-                                input = "" // Reset input
-                                if (!contains) incorrectCount++
-                            }) {
-                                Text("Check letter")
+                                // Spacer(modifier = Modifier.weight(1f))
+                                Button(
+                                    modifier = Modifier
+                                        .fillMaxWidth()
+                                        .height(60.dp)
+                                        .padding(horizontal = 10.dp),
+                                    onClick = {
+                                        val contains = containsChar(
+                                            countries[random] as String,
+                                            if (input.isNotEmpty()) input[0] else ' ',
+                                            dashes,
+                                            guesses
+                                        )
+                                        input = "" // Reset input
+                                        if (!contains) incorrectCount++
+                                    }) {
+                                    Text("Submit", textAlign = TextAlign.Center)
+                                }
                             }
                             Text("Incorrect guesses: $incorrectCount")
                             if (incorrectCount >= 3) {

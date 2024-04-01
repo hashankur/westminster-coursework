@@ -1,7 +1,6 @@
 package com.hashankur.countryflags.ui
 
 import android.os.Bundle
-import android.util.Log
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.compose.foundation.clickable
@@ -77,7 +76,6 @@ class GuessCountryActivity : ComponentActivity() {
                                 .padding(16.dp)
                                 .fillMaxHeight()
                         ) {
-                            Log.d("random", random)
                             when {
                                 openAlertDialog -> {
                                     CheckAnswerDialog(
