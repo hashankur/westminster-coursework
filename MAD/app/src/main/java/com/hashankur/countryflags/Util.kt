@@ -18,7 +18,6 @@ import androidx.compose.material3.FilledTonalButton
 import androidx.compose.material3.Icon
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.MutableState
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
@@ -73,32 +72,21 @@ fun countryKeyValues(): Triple<JSONObject, List<String>, List<String>> {
 
 @Composable
 fun ActionButton(
-    nextRound: MutableState<Boolean>,
-    random: MutableState<String>,
-    countryKeys: List<String>,
-    openAlertDialog: MutableState<Boolean>,
-    isCorrect: MutableState<Boolean>
+    nextRound: Boolean,
+    submit: () -> Unit,
+    next: () -> Unit,
 ) {
     Row(horizontalArrangement = Arrangement.End, modifier = Modifier.fillMaxWidth()) {
         // TODO: Use a single button
-        if (nextRound.value) {
-            FilledTonalButton(
-                onClick = {
-                    random.value = countryKeys.random()
-                    nextRound.value = !nextRound.value
-                    isCorrect.value = false
-                }) {
+        if (nextRound) {
+            FilledTonalButton(onClick = { next() }) {
                 Text(text = "Next")
                 Spacer(Modifier.size(ButtonDefaults.IconSize))
                 Icon(Icons.AutoMirrored.Filled.ArrowForward, "Next")
             }
 
         } else {
-            Button(
-                onClick = {
-                    openAlertDialog.value = true
-                    nextRound.value = true
-                }) {
+            Button(onClick = { submit() }) {
                 Text(text = "Submit")
                 Spacer(Modifier.size(ButtonDefaults.IconSize))
                 Icon(Icons.Filled.Check, "Submit")

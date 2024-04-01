@@ -1,6 +1,7 @@
 package com.hashankur.countryflags.ui
 
 import android.os.Bundle
+import android.util.Log
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.compose.foundation.clickable
@@ -14,16 +15,24 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.automirrored.filled.ArrowForward
+import androidx.compose.material.icons.filled.Check
 import androidx.compose.material3.Card
+import androidx.compose.material3.ExtendedFloatingActionButton
 import androidx.compose.material3.HorizontalDivider
+import androidx.compose.material3.Icon
 import androidx.compose.material3.ListItem
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.saveable.rememberSaveable
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -32,7 +41,6 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.compose.ui.window.Dialog
-import com.hashankur.countryflags.ActionButton
 import com.hashankur.countryflags.FlagImage
 import com.hashankur.countryflags.R
 import com.hashankur.countryflags.countryKeyValues
@@ -49,14 +57,30 @@ class GuessCountryActivity : ComponentActivity() {
                     modifier = Modifier.fillMaxSize(),
                     color = MaterialTheme.colorScheme.background
                 ) {
+                    var nextRound by rememberSaveable { mutableStateOf(false) }
+
                     Scaffold(
                         topBar = {
                             TopBarBuilder(
                                 getString(R.string.mode1), goBack = { finish() }
                             )
-                        }
+                        },
+                        floatingActionButton = {
+                            ExtendedFloatingActionButton(
+                                text = { if (!nextRound) Text("Submit") else Text("Next") },
+                                icon = {
+                                    if (!nextRound) Icon(Icons.Filled.Check, "Submit")
+                                    else Icon(
+                                        Icons.AutoMirrored.Filled.ArrowForward,
+                                        "Next"
+                                    )
+                                },
+                                onClick = { nextRound = !nextRound },
+                                containerColor = if (nextRound) MaterialTheme.colorScheme.secondary else MaterialTheme.colorScheme.primary
+                            )
+                        },
                     ) { innerPadding ->
-                        GuessCountryScreen(innerPadding)
+                        GuessCountryScreen(innerPadding, nextRound)
                     }
                 }
             }
@@ -65,14 +89,22 @@ class GuessCountryActivity : ComponentActivity() {
 }
 
 @Composable
-fun GuessCountryScreen(innerPadding: PaddingValues) {
+fun GuessCountryScreen(innerPadding: PaddingValues, nextRound: Boolean) {
     val (countries, countryKeys, countryValues) = countryKeyValues()
 
     // TODO: do not repeat the same country
-    val random = rememberSaveable { mutableStateOf(countryKeys.random()) }
-    val isCorrect = rememberSaveable { mutableStateOf(false) }
-    val openAlertDialog = rememberSaveable { mutableStateOf(false) }
-    val nextRound = rememberSaveable { mutableStateOf(false) }
+    var random by rememberSaveable { mutableStateOf(countryKeys.random()) }
+    var isCorrect by rememberSaveable { mutableStateOf(false) }
+    var openAlertDialog by rememberSaveable { mutableStateOf(false) }
+
+    // TODO: Fix double calculation
+    LaunchedEffect(nextRound) {
+        if (nextRound) openAlertDialog = true
+        else {
+            random = countryKeys.random()
+            isCorrect = false
+        }
+    }
 
     Column(
         Modifier
@@ -81,31 +113,41 @@ fun GuessCountryScreen(innerPadding: PaddingValues) {
             .padding(16.dp)
             .fillMaxHeight()
     ) {
+        Log.d("random", random)
         when {
-            openAlertDialog.value -> {
+            openAlertDialog -> {
                 CheckAnswerDialog(
-                    onDismissRequest = { openAlertDialog.value = false },
-                    dialogStatus = isCorrect.value,
-                    country = countries[random.value].toString(),
+                    onDismissRequest = { openAlertDialog = false },
+                    dialogStatus = isCorrect,
+                    country = countries[random].toString(),
                 )
             }
         }
-        //        Text(countries[random.value].toString())
-        FlagImage(flagByCountryCode(random.value))
+        // Text(countries[random.value].toString())
+        FlagImage(flagByCountryCode(random))
 
-        LazyColumn(Modifier.weight(1f)) {
+        // var selectedIndex by remember { mutableStateOf(-1) }
+
+        LazyColumn() {
             items(countries.length()) {
                 val country = countryValues.elementAt(it)
                 ListItem(
                     headlineContent = { Text(country) },
-                    Modifier.clickable {
-                        isCorrect.value = (country == countries[random.value])
-                    }
+                    Modifier
+                        .clickable {
+                            isCorrect = (country == countries[random])
+//                            selectedIndex = it
+//                            Log.d("it", country.toString())
+//                            Log.d("selected", selectedIndex.toString())
+//                            Log.d("comp", (it == selectedIndex).toString())
+                        }
+//                        .background(
+//                            if (it == selectedIndex) Color.Green else Color.Red
+//                        )
                 )
                 HorizontalDivider()
             }
         }
-        ActionButton(nextRound, random, countryKeys, openAlertDialog, isCorrect)
     }
 }
 

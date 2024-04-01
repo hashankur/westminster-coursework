@@ -28,7 +28,6 @@ import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import com.hashankur.countryflags.ActionButton
 import com.hashankur.countryflags.FlagImage
 import com.hashankur.countryflags.R
 import com.hashankur.countryflags.countryKeyValues
@@ -141,7 +140,7 @@ fun GuessHintsScreen(innerPadding: PaddingValues) {
             isCorrect.value = true
         }
         // TODO: Clear guesses
-        ActionButton(nextRound, random, countryKeys, openAlertDialog, isCorrect)
+//        ActionButton(nextRound, random, countryKeys, openAlertDialog, isCorrect)
     }
 }
 
