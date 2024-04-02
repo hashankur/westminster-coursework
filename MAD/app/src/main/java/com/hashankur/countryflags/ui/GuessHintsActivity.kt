@@ -111,7 +111,9 @@ class GuessHintsActivity : ComponentActivity() {
                                 dashes.value,
                                 fontFamily = FontFamily.Monospace,
                                 fontSize = 24.sp,
-                                modifier = Modifier.padding(30.dp),
+                                modifier = Modifier
+                                    .padding(30.dp)
+                                    .fillMaxWidth(),
                                 textAlign = TextAlign.Center
                             )
                             Row() {

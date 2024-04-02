@@ -15,6 +15,7 @@ import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
@@ -40,7 +41,15 @@ class GuessFlagActivity : ComponentActivity() {
                     modifier = Modifier.fillMaxSize(),
                     color = MaterialTheme.colorScheme.background
                 ) {
-                    var nextRound by rememberSaveable { mutableStateOf(false) }
+                    val (countries, countryKeys, countryValues) = countryKeyValues()
+
+                    var displayedCountries by rememberSaveable { mutableStateOf((1..3).map { countryKeys.random() }) }
+                    var random by rememberSaveable { mutableStateOf(displayedCountries.random()) }
+                    var isCorrect by rememberSaveable { mutableStateOf(false) }
+                    var openAlertDialog by rememberSaveable { mutableStateOf(false) }
+
+                    val nextRound by rememberSaveable { mutableStateOf(true) }
+                    var attempt by remember { mutableStateOf(false) }
 
                     Scaffold(
                         topBar = {
@@ -49,16 +58,14 @@ class GuessFlagActivity : ComponentActivity() {
                             )
                         },
                         floatingActionButton = {
-                            GoToNextLevel(nextRound, action = { nextRound = !nextRound })
+                            GoToNextLevel(nextRound, action = {
+                                displayedCountries = (1..3).map { countryKeys.random() }
+                                random = displayedCountries.random()
+                                isCorrect = false
+                                attempt = false
+                            })
                         },
                     ) { innerPadding ->
-                        val (countries, countryKeys, countryValues) = countryKeyValues()
-
-                        val displayedCountries by rememberSaveable { mutableStateOf((1..3).map { countryKeys.random() }) }
-                        val random by rememberSaveable { mutableStateOf(displayedCountries.random()) }
-                        var isCorrect by rememberSaveable { mutableStateOf(false) }
-                        var openAlertDialog by rememberSaveable { mutableStateOf(false) }
-
                         Column(
                             Modifier
                                 .fillMaxWidth()
@@ -91,7 +98,8 @@ class GuessFlagActivity : ComponentActivity() {
                                     select = {
                                         if (random == displayedCountries[index - 1]) isCorrect =
                                             true
-                                        openAlertDialog = true
+                                        if (!attempt) openAlertDialog = true
+                                        attempt = true
                                     })
                                 Spacer(modifier = Modifier.padding(0.dp))
                             }
