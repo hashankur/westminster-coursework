@@ -2,7 +2,6 @@ package com.hashankur.countryflags
 
 import android.content.res.Resources
 import androidx.compose.foundation.Image
-import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.aspectRatio
 import androidx.compose.foundation.layout.padding
 import androidx.compose.runtime.Composable
@@ -39,16 +38,15 @@ fun flagByCountryCode(countryCode: String): Pair<Int, String> {
 }
 
 @Composable
-fun FlagImage(resource: Pair<Int, String>, select: () -> Unit = {}) {
+fun FlagImage(resource: Pair<Int, String>, modifier: Modifier = Modifier) {
     val (drawableId, countryCode) = resource
     Image(
         painter = painterResource(drawableId),
         contentDescription = "Flag of $countryCode",
         contentScale = ContentScale.Fit,
-        modifier = Modifier
+        modifier = modifier
             .aspectRatio(16f / 9f)
             .padding(bottom = 10.dp)
-            .clickable { select() }
     )
 }
 

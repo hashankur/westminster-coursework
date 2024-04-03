@@ -90,7 +90,7 @@ class GuessCountryActivity : ComponentActivity() {
 
                             // var selectedIndex by remember { mutableStateOf(-1) }
 
-                            LazyColumn() {
+                            LazyColumn {
                                 items(countries.length()) {
                                     val country = countryValues.elementAt(it)
                                     ListItem(

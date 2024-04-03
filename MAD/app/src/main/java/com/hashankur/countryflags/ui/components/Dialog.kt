@@ -23,7 +23,7 @@ import androidx.compose.ui.window.Dialog
 fun CheckAnswerDialog(
     onDismissRequest: () -> Unit,
     dialogStatus: Boolean,
-    country: String,
+    country: String? = null,
 ) {
     Dialog(onDismissRequest = { onDismissRequest() }) {
         // Draw a rectangle shape with rounded corners inside the dialog
@@ -47,16 +47,18 @@ fun CheckAnswerDialog(
                     fontWeight = FontWeight.Bold,
                     fontSize = 35.sp
                 )
-                Text(
-                    text = country,
-                    modifier = Modifier
-                        .padding(16.dp)
-                        .align(Alignment.CenterHorizontally),
-                    color = Color(0xFF4285F4),
-                    fontWeight = FontWeight.SemiBold,
-                    fontSize = 20.sp,
-                    textAlign = TextAlign.Center
-                )
+                if (country !== null) {
+                    Text(
+                        text = country,
+                        modifier = Modifier
+                            .padding(16.dp)
+                            .align(Alignment.CenterHorizontally),
+                        color = Color(0xFF4285F4),
+                        fontWeight = FontWeight.SemiBold,
+                        fontSize = 20.sp,
+                        textAlign = TextAlign.Center
+                    )
+                }
             }
         }
     }

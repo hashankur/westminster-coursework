@@ -3,8 +3,8 @@ package com.hashankur.countryflags.ui
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -36,12 +36,11 @@ class GuessFlagActivity : ComponentActivity() {
         super.onCreate(savedInstanceState)
         setContent {
             CountryFlagsTheme {
-                // A surface container using the 'background' color from the theme
                 Surface(
                     modifier = Modifier.fillMaxSize(),
                     color = MaterialTheme.colorScheme.background
                 ) {
-                    val (countries, countryKeys, countryValues) = countryKeyValues()
+                    val (countries, countryKeys, _) = countryKeyValues()
 
                     var displayedCountries by rememberSaveable { mutableStateOf((1..3).map { countryKeys.random() }) }
                     var random by rememberSaveable { mutableStateOf(displayedCountries.random()) }
@@ -70,7 +69,8 @@ class GuessFlagActivity : ComponentActivity() {
                             Modifier
                                 .fillMaxWidth()
                                 .padding(innerPadding)
-                                .padding(16.dp)
+                                .padding(horizontal = 50.dp)
+                                .padding(top = 30.dp)
                                 .fillMaxHeight()
                         ) {
                             when {
@@ -87,21 +87,22 @@ class GuessFlagActivity : ComponentActivity() {
                                 countries[random].toString(),
                                 fontSize = 30.sp,
                                 textAlign = TextAlign.Center,
+                                lineHeight = 40.sp,
                                 modifier = Modifier
                                     .fillMaxWidth()
-                                    .padding(10.dp)
+                                    .padding(vertical = 30.dp)
                             )
 
-                            (1..3).forEach { index ->
+                            displayedCountries.forEach { country ->
                                 FlagImage(
-                                    flagByCountryCode(displayedCountries[index - 1]),
-                                    select = {
-                                        if (random == displayedCountries[index - 1]) isCorrect =
-                                            true
+                                    flagByCountryCode(country),
+                                    modifier = Modifier.clickable {
+                                        if (random == country)
+                                            isCorrect = true
                                         if (!attempt) openAlertDialog = true
                                         attempt = true
-                                    })
-                                Spacer(modifier = Modifier.padding(0.dp))
+                                    }
+                                )
                             }
                         }
                     }

@@ -47,7 +47,7 @@ class GuessHintsActivity : ComponentActivity() {
                     modifier = Modifier.fillMaxSize(),
                     color = MaterialTheme.colorScheme.background
                 ) {
-                    val (countries, countryKeys, countryValues) = countryKeyValues()
+                    val (countries, countryKeys, _) = countryKeyValues()
                     var isCorrect by rememberSaveable { mutableStateOf(false) }
                     var openAlertDialog by rememberSaveable { mutableStateOf(false) }
 
@@ -116,7 +116,7 @@ class GuessHintsActivity : ComponentActivity() {
                                     .fillMaxWidth(),
                                 textAlign = TextAlign.Center
                             )
-                            Row() {
+                            Row {
                                 OutlinedTextField(
                                     value = input,
                                     onValueChange = { newValue ->
