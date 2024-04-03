@@ -9,6 +9,8 @@ import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Surface
@@ -24,6 +26,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.hashankur.countryflags.FlagImage
 import com.hashankur.countryflags.R
+import com.hashankur.countryflags.countdown
 import com.hashankur.countryflags.countryKeyValues
 import com.hashankur.countryflags.flagByCountryCode
 import com.hashankur.countryflags.ui.components.CheckAnswerDialog
@@ -34,6 +37,7 @@ import com.hashankur.countryflags.ui.theme.CountryFlagsTheme
 class GuessFlagActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        val timer = intent.getBooleanExtra("timer", false)
         setContent {
             CountryFlagsTheme {
                 Surface(
@@ -53,7 +57,10 @@ class GuessFlagActivity : ComponentActivity() {
                     Scaffold(
                         topBar = {
                             TopBarBuilder(
-                                getString(R.string.mode3), goBack = { finish() }
+                                getString(R.string.mode3),
+                                goBack = { finish() },
+                                timer,
+                                countdown(nextRound).first
                             )
                         },
                         floatingActionButton = {
@@ -72,6 +79,7 @@ class GuessFlagActivity : ComponentActivity() {
                                 .padding(horizontal = 50.dp)
                                 .padding(top = 30.dp)
                                 .fillMaxHeight()
+                                .verticalScroll(rememberScrollState())
                         ) {
                             when {
                                 openAlertDialog -> {

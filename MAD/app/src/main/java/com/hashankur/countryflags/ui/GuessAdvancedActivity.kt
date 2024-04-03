@@ -5,16 +5,20 @@ import android.util.Log
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.OutlinedTextFieldDefaults
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateOf
@@ -26,6 +30,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 import com.hashankur.countryflags.FlagImage
 import com.hashankur.countryflags.R
+import com.hashankur.countryflags.countdown
 import com.hashankur.countryflags.countryKeyValues
 import com.hashankur.countryflags.flagByCountryCode
 import com.hashankur.countryflags.ui.components.CheckAnswerDialog
@@ -36,6 +41,7 @@ import com.hashankur.countryflags.ui.theme.CountryFlagsTheme
 class GuessAdvancedActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        val timer = intent.getBooleanExtra("timer", false)
         setContent {
             CountryFlagsTheme {
                 Surface(
@@ -48,39 +54,36 @@ class GuessAdvancedActivity : ComponentActivity() {
                     var openAlertDialog by rememberSaveable { mutableStateOf(false) }
 
                     var nextRound by rememberSaveable { mutableStateOf(false) }
-                    var attempt by remember { mutableStateOf(false) }
                     var count by remember { mutableIntStateOf(0) }
 
                     var isCorrect = mutableListOf(false, false, false)
-                    var status = rememberSaveable { mutableListOf(false, false, false) }
+                    val status = rememberSaveable { mutableListOf(false, false, false) }
+                    var firstRun by rememberSaveable { mutableStateOf(false) }
 
                     var country1 by rememberSaveable { mutableStateOf(false) }
                     var country2 by rememberSaveable { mutableStateOf(false) }
                     var country3 by rememberSaveable { mutableStateOf(false) }
 
-//                    var input by rememberSaveable { mutableStateOf(listOf<Boolean>()) }
-//                    var input = remember { mutableMapOf<String, String>() }
-
                     Scaffold(
                         topBar = {
                             TopBarBuilder(
-                                getString(R.string.mode3), goBack = { finish() }
+                                getString(R.string.mode4),
+                                goBack = { finish() },
+                                timer,
+                                countdown(nextRound).first
                             )
                         },
                         floatingActionButton = {
                             GoToNextLevel(nextRound, action = {
-//                                var didChange = (isCorrect != status)
+                                if (!firstRun) firstRun = true
                                 isCorrect = status
                                 if (nextRound) {
                                     displayedCountries = (1..3).map { countryKeys.random() }
                                     count = -1
                                     nextRound = false
+                                    isCorrect.fill(false)
                                 }
-//                                isCorrect = false
-//                                attempt = false
-//                                if (!didChange)
                                 count++
-//                                Log.d("test2", didChange.toString())
                                 if (count >= 3) {
                                     nextRound = true
                                     Log.d("test", "test")
@@ -95,10 +98,9 @@ class GuessAdvancedActivity : ComponentActivity() {
                                 CheckAnswerDialog(
                                     onDismissRequest = {
                                         openAlertDialog = false
-//                                        incorrectCount = 0
                                         isCorrect.fill(false)
                                     },
-                                    dialogStatus = !isCorrect.contains(false),
+                                    dialogStatus = !status.contains(false),
                                 )
                             }
                         }
@@ -110,14 +112,15 @@ class GuessAdvancedActivity : ComponentActivity() {
                                 .padding(horizontal = 80.dp)
                                 .padding(top = 30.dp)
                                 .fillMaxHeight()
+                                .verticalScroll(rememberScrollState())
                         ) {
-                            Text("Status: $country1, $country2, $country3")
-//                            Text("Status: $status")
-//                            Text("Correct: $isCorrect")
-                            Text("Count: $count")
+                            Text("Attempts remaining: " + (3 - count))
+                            Spacer(Modifier.padding(10.dp))
                             displayedCountries.withIndex().forEach { (index, country) ->
                                 var input by remember { mutableStateOf("") }
-//                                var isCorrect by rememberSaveable { mutableStateOf(false) }
+                                LaunchedEffect(displayedCountries) {
+                                    input = ""  // Clear text inputs
+                                }
 
                                 FlagImage(flagByCountryCode(country))
                                 Text(countries[country].toString())
@@ -125,27 +128,25 @@ class GuessAdvancedActivity : ComponentActivity() {
                                     value = input,
                                     onValueChange = {
                                         input = it
-//                                        status[index] =
-                                        var equals =
+                                        val equals =
                                             input.lowercase() == countries[country].toString()
                                                 .lowercase()
+                                        status[index] = equals
                                         when (index) {
                                             0 -> country1 = equals
                                             1 -> country2 = equals
                                             2 -> country3 = equals
                                         }
-//                                        input[country] = input[country] + it
-//                                        Log.d("it", it.toString())
-//                                        Log.d("input", input.toString())
                                     },
                                     label = { Text("Guess country name") },
                                     modifier = Modifier
                                         .fillMaxWidth()
                                         .padding(bottom = 30.dp),
                                     enabled = !isCorrect[index],
+                                    isError = input != "" && !isCorrect[index] && firstRun && !nextRound,
                                     colors = OutlinedTextFieldDefaults.colors(
-                                        disabledTextColor = Color.Green
-
+                                        disabledTextColor = Color.Green,
+                                        errorTextColor = Color.Red
                                     )
                                 )
                             }

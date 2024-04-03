@@ -15,19 +15,23 @@
         <activity
             android:name=".ui.GuessCountryActivity"
             android:exported="false"
-            android:theme="@style/Theme.CountryFlags" />
+            android:theme="@style/Theme.CountryFlags"
+            android:windowSoftInputMode="adjustResize" />
         <activity
             android:name=".ui.GuessHintsActivity"
             android:exported="false"
-            android:theme="@style/Theme.CountryFlags" />
+            android:theme="@style/Theme.CountryFlags"
+            android:windowSoftInputMode="adjustResize" />
         <activity
             android:name=".ui.GuessFlagActivity"
             android:exported="false"
-            android:theme="@style/Theme.CountryFlags" />
+            android:theme="@style/Theme.CountryFlags"
+            android:windowSoftInputMode="adjustResize" />
         <activity
             android:name=".ui.GuessAdvancedActivity"
             android:exported="false"
-            android:theme="@style/Theme.CountryFlags" />
+            android:theme="@style/Theme.CountryFlags"
+            android:windowSoftInputMode="adjustResize" />
         <activity
             android:name=".MainActivity"
             android:exported="true"
