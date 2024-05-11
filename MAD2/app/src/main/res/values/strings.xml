@@ -1,0 +1,7 @@
+<resources>
+    <string name="app_name">Football Clubs</string>
+    <string name="title_activity_add_leagues">Add Leagues to DB</string>
+    <string name="title_activity_search_clubs_league">Search for Clubs by League</string>
+    <string name="title_activity_search_clubs">Search for Clubs</string>
+    <string name="title_activity_lookup_jerseys">Lookup Jerseys</string>
+</resources>
