@@ -114,22 +114,14 @@ class LookupJerseysActivity : ComponentActivity() {
                             Spacer(modifier = Modifier.padding(10.dp))
                             Row {
                                 Button(onClick = {
-//                                    val teamEquipment = mutableListOf<JSONArray>()
                                     val temp = mutableListOf<Int>()
                                     scope.launch {
                                         resTeams.forEach { (teamId, teamName) ->
                                             if (teamName.lowercase().contains(input.lowercase())) {
                                                 Log.d("t", teamName)
                                                 temp.add(teamId)
-//                                                teamEquipment.add(
-//                                                    JSONObject(
-//                                                        fetch("https://www.thesportsdb.com/api/v1/json/3/lookupequipment.php?id=$teamId")
-//                                                    )
-//                                                        .getJSONArray("equipment")
-//                                                )
                                             }
                                         }
-//                                        resEquipment = teamEquipment.toList()
                                         test = temp
                                     }
                                 }) {
@@ -139,7 +131,7 @@ class LookupJerseysActivity : ComponentActivity() {
 
                             Spacer(modifier = Modifier.padding(10.dp))
 
-                            LaunchedEffect(resEquipment) {
+                            LaunchedEffect(test) {
                                 val temp = mutableListOf<JSONArray>()
                                 test.forEach { teamId ->
                                     val equipment = JSONObject(
@@ -154,7 +146,6 @@ class LookupJerseysActivity : ComponentActivity() {
                             LazyColumn(Modifier.weight(1f)) {
                                 items(test.size) { index ->
                                     resTeams[test[index]]?.let { Text(it) }
-//                                    }
 
                                     LazyRow(
                                         Modifier.weight(1f),
